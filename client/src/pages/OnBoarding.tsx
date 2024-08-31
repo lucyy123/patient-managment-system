@@ -1,22 +1,28 @@
 import { CallOutlined, MailOutline, PersonOutline } from "@mui/icons-material";
 import {
-    Box,
-    Button,
-    IconButton,
-    InputAdornment,
-    Paper,
-    Stack,
-    TextField,
-    Typography,
-    useTheme,
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
 } from "@mui/material";
+import { FormEvent, useState } from "react";
 import logo from "../assets/logo.png";
 import onboardinimage from "../assets/onboarding.png";
+import DialogComponent from "../Components/Dialog";
 
 const OnBoarding = () => {
   const theme = useTheme();
+  const [open,setOpen] = useState(false)
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+setOpen(true)
+  };
 
   return (
     <Stack
@@ -190,6 +196,7 @@ const OnBoarding = () => {
                 {/* ------------Get Started button---------- */}
 
                 <Button
+            type="submit"
                   sx={{
                     mt: "1.5rem",
                     color: "white",
@@ -218,6 +225,7 @@ const OnBoarding = () => {
 
       {/* --------right side ------------- */}
       <Box width={"50%"} height={"100vh"}>
+        {/* ----------- image ----------- */}
         <Box sx={{
             width:"100%",
             height: "100%" 
@@ -235,8 +243,7 @@ const OnBoarding = () => {
             />
             </Box>
       </Box>
-
-      {/* ----------- image ----------- */}
+<DialogComponent open={open} handelOpen={setOpen} />
     </Stack>
   );
 };
