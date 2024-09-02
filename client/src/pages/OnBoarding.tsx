@@ -4,69 +4,34 @@ import {
   Button,
   IconButton,
   InputAdornment,
-  Paper,
   Stack,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
 import { FormEvent, useState } from "react";
-import logo from "../assets/logo.png";
 import onboardinimage from "../assets/onboarding.png";
 import DialogComponent from "../Components/Dialog";
+import Heading from "../Components/shared/Heading";
 
 const OnBoarding = () => {
   const theme = useTheme();
-  const [open,setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
-  const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-setOpen(true)
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setOpen(true);
   };
 
   return (
-    <Stack
-      direction={"row"}
-      sx={{
-        // flexDirection: { xs: "column" },
-        borderRadius: "2px solid",
-      }}
-      width={"100%"}
-      height={"100vh"}
-    >
+    <Stack direction={"row"} width={"100%"} height={"100vh"}>
       {/* --------left side------- --- */}
       <Box width={"50%"} padding={"2rem 6rem"}>
         {/* ------------logo---------- */}
 
-        <Box>
-          <Stack direction={"row"} gap={1}>
-            <Paper
-              elevation={2}
-              sx={{
-                padding: "0.2rem",
-                height: "32px",
-                width: "32px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                bgcolor: "lightgray",
-              }}
-            >
-              <img
-                src={logo}
-                alt="health_logo"
-                style={{
-                  height: "30px",
-                  width: "30px",
-                }}
-              />
-            </Paper>
-            <Typography variant="h4" fontWeight={"700"} fontSize={"1.5rem"}>
-              Care Plus
-            </Typography>
-          </Stack>
-        </Box>
-{/* ---------------------- content------------------------------- */}
+        <Heading />
+
+        {/* ---------------------- content------------------------------- */}
         <Box marginTop={13}>
           {/* ------------title---------- */}
           <Typography variant="h4" fontSize={"2.1rem"}>
@@ -140,26 +105,26 @@ setOpen(true)
                     size="small"
                     fullWidth
                     slotProps={{
-                        input: {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                edge="start"
-                              >
-                                {/* ----------------- user icon---------------- */}
-                                <MailOutline
-                                  sx={{
-                                    color: "#CDCECF",
-                                    marginInline: "0.23rem",
-                                    background: "none",
-                                  }}
-                                />
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              edge="start"
+                            >
+                              {/* ----------------- Mail icon---------------- */}
+                              <MailOutline
+                                sx={{
+                                  color: "#CDCECF",
+                                  marginInline: "0.23rem",
+                                  background: "none",
+                                }}
+                              />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
                   />
                 </Box>
                 {/* ------------Phone Number---------- */}
@@ -171,36 +136,36 @@ setOpen(true)
                     size="small"
                     fullWidth
                     slotProps={{
-                        input: {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                edge="start"
-                              >
-                                {/* ----------------- user icon---------------- */}
-                                <CallOutlined
-                                  sx={{
-                                    color: "#CDCECF",
-                                    marginInline: "0.23rem",
-                                    background: "none",
-                                  }}
-                                />
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              edge="start"
+                            >
+                              {/* ----------------- user icon---------------- */}
+                              <CallOutlined
+                                sx={{
+                                  color: "#CDCECF",
+                                  marginInline: "0.23rem",
+                                  background: "none",
+                                }}
+                              />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
                   />
                 </Box>
                 {/* ------------Get Started button---------- */}
 
                 <Button
-            type="submit"
+                  type="submit"
                   sx={{
                     mt: "1.5rem",
                     color: "white",
-                    textTransform:"none"
+                    textTransform: "none",
                   }}
                   variant="contained"
                   fullWidth
@@ -212,38 +177,42 @@ setOpen(true)
           </Box>
         </Box>
 
-
-      {/*-------------------------------- copyright ----------------------- */}
-      <Typography variant="body2" fontSize={"0.7rem"} sx={{
-        color:theme.palette.text.secondary,
-        marginTop:"6.6rem"
-        
-      }}>@careplus copyright</Typography>
-
+        {/*-------------------------------- copyright ----------------------- */}
+        <Typography
+          variant="body2"
+          fontSize={"0.7rem"}
+          sx={{
+            color: theme.palette.text.secondary,
+            marginTop: "6.6rem",
+          }}
+        >
+          @careplus copyright
+        </Typography>
       </Box>
-
 
       {/* --------right side ------------- */}
       <Box width={"50%"} height={"100vh"}>
         {/* ----------- image ----------- */}
-        <Box sx={{
-            width:"100%",
-            height: "100%" 
-        }}>
-        <img
-          src={onboardinimage}
-          alt="onboarding_image"
-          style={{
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <img
+            src={onboardinimage}
+            alt="onboarding_image"
+            style={{
               width: "100%",
-              height: "95%",  // Set the height to 100% of the parent container
+              height: "95%", // Set the height to 100% of the parent container
               borderRadius: "24px",
-            //   height: "1000px",
+              //   height: "1000px",
               objectFit: "cover",
             }}
-            />
-            </Box>
+          />
+        </Box>
       </Box>
-<DialogComponent open={open} handelOpen={setOpen} />
+      <DialogComponent open={open} handelOpen={setOpen} />
     </Stack>
   );
 };
