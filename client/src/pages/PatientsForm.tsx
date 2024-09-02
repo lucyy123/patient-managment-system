@@ -1,34 +1,44 @@
 import {
-    CalendarTodayOutlined,
-    CallOutlined,
-    MailOutline,
-    PersonOutline,
+  CalendarTodayOutlined,
+  CallOutlined,
+  MailOutline,
+  PersonOutline,
 } from "@mui/icons-material";
 import {
-    Box,
-    Button,
-    Checkbox,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    Grid,
-    IconButton,
-    InputAdornment,
-    MenuItem,
-    Radio,
-    RadioGroup,
-    Select,
-    Stack,
-    TextField,
-    Typography,
-    useTheme,
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
 } from "@mui/material";
+import { useNavigate } from "react-router";
 import pateintsImage from "../assets/patients_page_image.png";
 import FileUploader from "../Components/FileUploader";
 import Heading from "../Components/shared/Heading";
+import LeftImage from "../Components/shared/LeftImage";
+import SubHeading from "../Components/shared/SubHeading";
 import { privacyContents } from "../utils/constants";
 
 const PatientsForm = () => {
+
+  const navigate = useNavigate()
+const hanldeSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
+e.preventDefault()
+  navigate('/appointment')
+}
+
   const theme = useTheme();
   return (
     <Stack
@@ -45,27 +55,13 @@ const PatientsForm = () => {
 
         {/* ---------------welcome----------------------- */}
 
-        <Box marginTop={8}>
-          <Typography variant="h4" fontSize={"2.3rem"} fontWeight={"700"}>
-            {" "}
-            Welcome 👋{" "}
-          </Typography>
-          {/* ---------------------------- sub title---------------------- */}
-          <Typography
-            variant="subtitle2"
-            fontSize={"1rem"}
-            sx={{
-              color: theme.palette.text.secondary,
-              mt: "0.5rem",
-            }}
-          >
-            {" "}
-            Let us know more about yourself{" "}
-          </Typography>
-        </Box>
+      
+
+        <SubHeading title="Welcome 👋" subtitile=" Let us know more about yourself"  />
 
         {/* ----------------- content   + form -------------------------- */}
         <form
+        onSubmit={hanldeSubmit}
           style={{
             marginTop: "2.4rem",
           }}
@@ -538,12 +534,12 @@ const PatientsForm = () => {
                   Allergies (if any)
                 </Typography>
                 <TextField
-                  size="small"
                   sx={{
                     border: "1px solid",
                     borderRadius: "8px",
-                    height: "95px",
                   }}
+                  multiline
+                  rows={3}
                   fullWidth
                   placeholder="ex:peanuts, tree and grass pollen, house dust mites"
                 />
@@ -565,8 +561,9 @@ const PatientsForm = () => {
                   sx={{
                     border: "1px solid",
                     borderRadius: "8px",
-                    height: "95px",
                   }}
+                  multiline
+                  rows={3}
                   fullWidth
                   placeholder="ex:Ketoconazole, Saridon"
                 />
@@ -588,8 +585,9 @@ const PatientsForm = () => {
                   sx={{
                     border: "1px solid",
                     borderRadius: "8px",
-                    height: "95px",
                   }}
+                  multiline
+                  rows={3}
                   fullWidth
                   placeholder="ex:Father had dust allergy"
                 />
@@ -611,8 +609,9 @@ const PatientsForm = () => {
                   sx={{
                     border: "1px solid",
                     borderRadius: "8px",
-                    height: "95px",
                   }}
+                  multiline
+                  rows={3}
                   fullWidth
                   placeholder="Software Engineer"
                 />
@@ -681,27 +680,7 @@ const PatientsForm = () => {
                   }}
                   fullWidth
                   placeholder="ex:ABCD123456"
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            edge="start"
-                          >
-                            {/* ----------------- user icon---------------- */}
-                            <PersonOutline
-                              sx={{
-                                color: "#CDCECF",
-                                marginInline: "0.23rem",
-                                background: "none",
-                              }}
-                            />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
+                 
                 />
               </Stack>
             </Grid>
@@ -749,7 +728,9 @@ const PatientsForm = () => {
                 </Stack>
               ))}
 
-              <Button variant="contained" sx={{
+              <Button variant="contained" 
+              type="submit"
+              sx={{
                 my:5,
                 textTransform:'none',
                 color:'#ffff'
@@ -762,25 +743,7 @@ const PatientsForm = () => {
       </Box>
 
       {/* ----------------------------------image------------------------------- */}
-
-      <Box flex={1}>
-        <Box
-          sx={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <img
-            src={pateintsImage}
-            alt="patients_image"
-            style={{
-              height: "99%",
-              width: "100%",
-              objectFit: "cover",
-            }}
-          />
-        </Box>
-      </Box>
+      <LeftImage image={pateintsImage}/>
     </Stack>
   );
 };

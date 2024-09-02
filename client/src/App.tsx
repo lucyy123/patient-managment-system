@@ -7,7 +7,8 @@ import Loader from "./Components/Loader";
 //*-------- lazy imports--------------------
 
 const OnBoarding = lazy(() => import("./pages/OnBoarding"));
-const PatientsForm = lazy(()=>import('./pages/PatientsForm'))
+const PatientsForm = lazy(()=>import('./pages/PatientsForm'));
+const Appointment = lazy(()=>import('./pages/Appointment'))
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<OnBoarding />}/>
           <Route path="/patient" element={<PatientsForm />}/>
+          <Route path="/appointment" element={<Appointment />}/>
         </Routes>
       </Suspense>
     </Router>
