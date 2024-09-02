@@ -10,13 +10,17 @@ export const theme = createTheme({
 
         secondary:{
             main:"#CDCECF"
+            
         },
         text: {
             primary: '#ffff', 
-            secondary:"#ABB8C4" // ligth grey text
+            secondary:"#ABB8C4" ,
+            disabled:'#363A3D99'
+            // ligth grey text
           },
          background: {
             default: '#131619',
+            
         },
     }
 })

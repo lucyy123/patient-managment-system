@@ -1,28 +1,25 @@
 import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Grid,
-  IconButton,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
+    CalendarTodayOutlined,
+    Search
+} from "@mui/icons-material";
+import {
+    Box,
+    Button,
+    Grid,
+    IconButton,
+    InputAdornment,
+    MenuItem,
+    OutlinedInput,
+    Select,
+    Stack,
+    TextField,
+    Typography,
+    useTheme
 } from "@mui/material";
 import leftImag from "../assets/appointment_image.jpeg";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
-import {
-  CalendarTodayOutlined,
-  MailOutline,
-  Search,
-} from "@mui/icons-material";
 
 const Appointment = () => {
   const theme = useTheme();
