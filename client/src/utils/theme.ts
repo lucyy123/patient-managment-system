@@ -9,7 +9,9 @@ export const theme = createTheme({
         }, 
 
         secondary:{
-            main:"#CDCECF"
+            main:"#CDCECF",
+            
+
             
         },
         text: {

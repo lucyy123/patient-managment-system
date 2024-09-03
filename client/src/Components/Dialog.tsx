@@ -1,17 +1,13 @@
-import { Close } from "@mui/icons-material";
 import {
-  Box,
   Button,
   DialogContent,
-  DialogTitle,
-  IconButton,
   Stack,
   TextField,
-  Typography,
   useTheme,
 } from "@mui/material";
 import { Dialog } from "@mui/material/";
 import { Dispatch } from "react";
+import DialogHeader from "../pages/admin/DialogHeader";
 
 type Props = {
   open?: boolean;
@@ -40,33 +36,12 @@ const DialogComponent = ({ handelOpen, open = true }: Props) => {
         },
       }}
     >
-      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-        <Box>
-          <Typography fontSize={"1.3rem"}>Verify OTP</Typography>
-          <Typography
-            variant="body2"
-            fontSize={"0.8rem"}
-            sx={{
-              color: theme.palette.text.secondary,
-              marginTop: "0.36rem",
-            }}
-          >
-            Please enter the OTP sent to your registered mobile number.
-          </Typography>
-        </Box>
-      </DialogTitle>
-      <IconButton
-        aria-label="close"
-        onClick={() => handelOpen(false)}
-        sx={(theme) => ({
-          position: "absolute",
-          right: 8,
-          top: 8,
-          color: theme.palette.grey[500],
-        })}
-      >
-        <Close />
-      </IconButton>
+      <DialogHeader
+        title="Verify OTP"
+        subtitle="Please enter the OTP sent to your registered mobile number."
+        handelOpen={handelOpen}
+      />
+
       <DialogContent>
         <Stack direction={"row"} gap={2}>
           {Array(6)

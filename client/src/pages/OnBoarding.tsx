@@ -178,16 +178,31 @@ const OnBoarding = () => {
         </Box>
 
         {/*-------------------------------- copyright ----------------------- */}
+        <Stack direction={'row'} sx={{
+             marginTop: "6.6rem",
+        }}>
+
         <Typography
+        marginRight={'auto'}
           variant="body2"
           fontSize={"0.7rem"}
           sx={{
             color: theme.palette.text.secondary,
-            marginTop: "6.6rem",
           }}
-        >
+          >
           @careplus copyright
         </Typography>
+        <Typography
+       
+          variant="body2"
+          fontSize={"0.7rem"}
+          sx={{
+            color: theme.palette.text.secondary,
+          }}
+          >
+         Admin
+        </Typography>
+          </Stack>
       </Box>
 
       {/* --------right side ------------- */}
