@@ -6,7 +6,9 @@ type Props ={
 
 const LeftImage = ({image}:Props) => {
   return (
-    <Box flex={1}>
+    <Box flex={1} sx={{
+      display:{xs:'none',md:'block'}
+    }}>
     <Box
       sx={{
         width: "100%",

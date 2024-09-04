@@ -2,7 +2,6 @@ import { CallOutlined, MailOutline, PersonOutline } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Hidden,
   IconButton,
   InputAdornment,
   Stack,
@@ -11,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { FormEvent, useState } from "react";
-import onboardinimage from "../assets/onboarding.png";
+import onboardinimage from '../assets/onboarding.png';
 import DialogComponent from "../Components/Dialog";
 import Heading from "../Components/shared/Heading";
 import { Link } from "react-router-dom";
@@ -30,7 +29,7 @@ const OnBoarding = () => {
       sx={{
         flexDirection: { xs: "column", md: "row" },
         overflow: { xs: "none", md: "hidden" },
-        width: { xs :"100%", md: "100%" },
+        width: { xs: "100%", md: "100%" },
         height: { xs: "100vh", md: "100vh" },
       }}
     >
@@ -46,11 +45,13 @@ const OnBoarding = () => {
         <Heading />
 
         {/* ---------------------- content------------------------------- */}
-        <Box  sx={{
-          marginTop:{xs:6,md:13}
-        }}>
+        <Box
+          sx={{
+            marginTop: { xs: 6, md: 13 },
+          }}
+        >
           {/* ------------title---------- */}
-          <Typography variant="h4" fontSize={"2.1rem"} fontWeight={'bold'}>
+          <Typography variant="h4" fontSize={"2.1rem"} fontWeight={"bold"}>
             Hi there,...
           </Typography>
           {/* ------------sub title---------- */}
@@ -197,7 +198,7 @@ const OnBoarding = () => {
         <Stack
           direction={"row"}
           sx={{
-            marginTop:{xs:'3.3rem', md:"6.6rem"},
+            marginTop: { xs: "3.3rem", md: "6.6rem" },
           }}
         >
           <Typography
@@ -227,9 +228,10 @@ const OnBoarding = () => {
       {/* --------right side ------------- */}
       <Box
         sx={{
-          paddingInline:{xs:'1.5rem'},
-          width: { xs: "100%", md: "50%" },
-          height: { xs: "1000px", md: "100vh" },
+          display: { xs: "none" },
+          paddingInline: { xs: "1.5rem" },
+          width: "50%",
+          height: "100vh",
         }}
       >
         {/* ----------- image ----------- */}
@@ -245,8 +247,7 @@ const OnBoarding = () => {
             style={{
               width: "100%",
               height: "100%",
-              // borderRadius: "24px",
-              //   height: "1000px",
+
               objectFit: "cover",
             }}
           />

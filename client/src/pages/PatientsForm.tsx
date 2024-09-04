@@ -32,36 +32,41 @@ import SubHeading from "../Components/shared/SubHeading";
 import { privacyContents } from "../utils/constants";
 
 const PatientsForm = () => {
-
-  const navigate = useNavigate()
-const hanldeSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
-e.preventDefault()
-  navigate('/appointment')
-}
+  const navigate = useNavigate();
+  const hanldeSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate("/appointment");
+  };
 
   const theme = useTheme();
   return (
     <Stack
-      direction={"row"}
       sx={{
+        flexDirection: { xs: "column", md: "row" },
         width: "100%",
         height: "100vh",
       }}
     >
       {/* ----------------------------- Patients form---------------------------- */}
-      <Box width={"75%"} padding={"2rem 6rem"}>
+      <Box
+        sx={{
+          width: { xs: "100%", md: "75%" },
+          padding: { xs: "3rem 1.5rem", md: "2rem 6rem" },
+        }}
+      >
         {/* ------------------------ logo + heading--------------------------- */}
         <Heading />
 
         {/* ---------------welcome----------------------- */}
 
-      
-
-        <SubHeading title="Welcome 👋" subtitile=" Let us know more about yourself"  />
+        <SubHeading
+          title="Welcome 👋"
+          subtitile=" Let us know more about yourself"
+        />
 
         {/* ----------------- content   + form -------------------------- */}
         <form
-        onSubmit={hanldeSubmit}
+          onSubmit={hanldeSubmit}
           style={{
             marginTop: "2.4rem",
           }}
@@ -69,17 +74,19 @@ e.preventDefault()
           {/* ---------------------------------------- P E R S O N A L  I N F O R M A T I O N------------------------------------ */}
           <Typography
             variant="h6"
-            fontSize={"1.8rem"}
-            mb={5}
+            fontSize={{ xs: "1.2rem", md: "1.8rem" }}
             fontWeight={"700"}
+            sx={{
+              mb: 5,
+            }}
           >
             {" "}
             Personal Information
           </Typography>
 
-          <Grid container spacing={3}>
+          <Grid container spacing={{ xs: 1, md: 3 }}>
             {/* ------------------------- full name------------------------------ */}
-            <Grid item md={12}>
+            <Grid item xs={12} md={12}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -122,7 +129,7 @@ e.preventDefault()
             </Grid>
 
             {/* ------------------------- Email------------------------------ */}
-            <Grid item md={6}>
+            <Grid item xs={12} md={12}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -165,7 +172,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- Phone Number------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -208,7 +215,7 @@ e.preventDefault()
             </Grid>
 
             {/* ------------------------- DOB------------------------------ */}
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -324,7 +331,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- Address------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -346,7 +353,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- Occupation------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -367,7 +374,7 @@ e.preventDefault()
               </Stack>
             </Grid>
             {/* ------------------------- Emergency contact name------------------------------ */}
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -389,7 +396,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- His Number------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -436,17 +443,17 @@ e.preventDefault()
 
           <Typography
             variant="h6"
-            fontSize={"1.8rem"}
-            my={5}
+            fontSize={{ xs: "1.2rem", md: "1.8rem" }}
+            my={{ xs: 2, md: 5 }}
             fontWeight={"700"}
           >
             {" "}
             Medical Information
           </Typography>
 
-          <Grid container spacing={3}>
+          <Grid container spacing={{ xs: 1, md: 3 }}>
             {/* ------------------------- primay care physician------------------------------ */}
-            <Grid item md={12}>
+            <Grid item xs={12} md={12}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -480,7 +487,7 @@ e.preventDefault()
             </Grid>
 
             {/* ------------------------- Insurance Provider------------------------------ */}
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -502,7 +509,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- Insurance  policy number------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -524,7 +531,7 @@ e.preventDefault()
             </Grid>
 
             {/* ------------------------- Allergies (if any)------------------------------ */}
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -547,7 +554,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- Current Medications------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -571,7 +578,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- Family Medical history------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -595,7 +602,7 @@ e.preventDefault()
             </Grid>
             {/* ------------------------- past medical history------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -623,16 +630,16 @@ e.preventDefault()
 
           <Typography
             variant="h6"
-            fontSize={"1.8rem"}
-            my={5}
+            fontSize={{ xs: "1.2rem", md: "1.8rem" }}
+            my={{ xs: 2, md: 5 }}
             fontWeight={"700"}
           >
             {" "}
             Identification and Verifications
           </Typography>
 
-          <Grid container spacing={3}>
-            <Grid item md={12}>
+          <Grid container spacing={{ xs: 1, md: 3 }}>
+            <Grid item xs={12} md={12}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -663,7 +670,7 @@ e.preventDefault()
                 </Select>
               </Stack>
             </Grid>
-            <Grid item md={12}>
+            <Grid item xs={12} md={12}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -680,7 +687,6 @@ e.preventDefault()
                   }}
                   fullWidth
                   placeholder="ex:ABCD123456"
-                 
                 />
               </Stack>
             </Grid>
@@ -700,8 +706,8 @@ e.preventDefault()
             <Grid item md={12}>
               <Typography
                 variant="h6"
-                fontSize={"1.8rem"}
-                my={4}
+                fontSize={{ xs: "1.2rem", md: "1.8rem" }}
+                my={{ xs: 2, md: 5 }}
                 fontWeight={"700"}
               >
                 {" "}
@@ -720,7 +726,7 @@ e.preventDefault()
                   <Typography
                     sx={{
                       color: theme.palette.text.secondary,
-                      fontSize: "1.2rem",
+                      fontSize: { xs: "0.8rem", md: "1.2rem" },
                     }}
                   >
                     {ele}
@@ -728,13 +734,16 @@ e.preventDefault()
                 </Stack>
               ))}
 
-              <Button variant="contained" 
-              type="submit"
-              sx={{
-                my:5,
-                textTransform:'none',
-                color:'#ffff'
-              }} fullWidth>
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{
+                  my: 5,
+                  textTransform: "none",
+                  color: "#ffff",
+                }}
+                fullWidth
+              >
                 Submit and continue
               </Button>
             </Grid>
@@ -743,7 +752,8 @@ e.preventDefault()
       </Box>
 
       {/* ----------------------------------image------------------------------- */}
-      <LeftImage image={pateintsImage}/>
+
+      <LeftImage image={pateintsImage} />
     </Stack>
   );
 };
