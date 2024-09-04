@@ -34,14 +34,19 @@ const navigate = useNavigate()
 
   return (
     <Stack
-      direction={"row"}
       sx={{
+        flexDirection:{xs:'column',md:'row'},
         width: "100%",
         height: "100vh",
       }}
     >
       {/* ------------left side ------------- */}
-      <Box width={"75%"} padding={"2rem 6rem"}>
+      <Box  
+      sx={{
+        width:{xs:'100%',md:'75%'},
+        padding:{xs:'3rem 1rem',md:'2rem 6rem'}
+      }}
+      >
         <Heading />
 
         {/* ?------------------------ sub heading --------------------------------------------- */}
@@ -52,21 +57,16 @@ const navigate = useNavigate()
         />
 
         {/* --------------------------- form content-------------------------------- */}
+<Box sx={{
+  mt:{xs:2,md:5}
+}}>
 
         <form onSubmit={handleSubmit}>
-          <Typography
-            variant="h6"
-            fontSize={"1.8rem"}
-            mb={5}
-            fontWeight={"700"}
-          >
-            {" "}
-            Personal Information
-          </Typography>
+      
 
           <Grid container spacing={3}>
             {/* ------------------------- Doctor------------------------------ */}
-            <Grid item md={12}>
+            <Grid item xs={12} md={12}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -115,7 +115,7 @@ const navigate = useNavigate()
             </Grid>
 
             {/* ------------------------- Reason For appointment------------------------------ */}
-            <Grid item md={6}>
+            <Grid item  xs ={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -139,7 +139,7 @@ const navigate = useNavigate()
             </Grid>
             {/* -------------------------additional comment / notes------------------------------ */}
 
-            <Grid item md={6}>
+            <Grid item xs={12} md={6}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -167,7 +167,7 @@ const navigate = useNavigate()
             </Grid>
 
             {/* ------------------------- expected appointment date------------------------------ */}
-            <Grid item md={12}>
+            <Grid item xs={12} md={12}>
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -224,6 +224,8 @@ const navigate = useNavigate()
             </Grid>
           </Grid>
         </form>
+</Box>
+
       </Box>
       {/* -----------------right side image */}
       <LeftImage image={leftImag} />
