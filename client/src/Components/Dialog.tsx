@@ -8,6 +8,7 @@ import {
 import { Dialog } from "@mui/material/";
 import { Dispatch } from "react";
 import DialogHeader from "../pages/admin/DialogHeader";
+import { useNavigate } from "react-router";
 
 type Props = {
   open?: boolean;
@@ -17,9 +18,13 @@ type Props = {
 const DialogComponent = ({ handelOpen, open = true }: Props) => {
   const theme = useTheme();
 
+  const navigate = useNavigate()
   const handleOTP = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    
     handelOpen(false);
+    navigate('/patient')
+
   };
   return (
     <Dialog
@@ -27,7 +32,6 @@ const DialogComponent = ({ handelOpen, open = true }: Props) => {
       onClose={() => handelOpen(false)}
       PaperProps={{
         component: "form",
-
         onSubmit: handleOTP,
         sx: {
           backgroundColor: theme.palette.background.default,
@@ -46,8 +50,9 @@ const DialogComponent = ({ handelOpen, open = true }: Props) => {
         <Stack direction={"row"} gap={2}>
           {Array(6)
             .fill("")
-            .map((ele) => (
+            .map((ele,idx) => (
               <TextField
+              key={idx}
                 inputProps={{
                   maxLength: 1,
                   style: {
@@ -78,6 +83,7 @@ const DialogComponent = ({ handelOpen, open = true }: Props) => {
 
         <Button
           fullWidth
+          type="submit"
           sx={{
             marginTop: "1.7rem",
             textTransform: "none",

@@ -20,12 +20,16 @@ import leftImag from "../assets/appointment_image.jpeg";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
+import { useNavigate } from "react-router";
 
 const Appointment = () => {
   const theme = useTheme();
-
+const navigate = useNavigate()
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    navigate(
+      '/success'
+    )
   };
 
   return (
@@ -206,6 +210,7 @@ const Appointment = () => {
               </Stack>
 
               <Button
+              type="submit"
                 variant="contained"
                 fullWidth
                 sx={{

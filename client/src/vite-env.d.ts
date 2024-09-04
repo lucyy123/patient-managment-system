@@ -15,3 +15,13 @@ export type TableRowsType ={
     status: string;
     doctor: string;
 }
+
+
+interface ImportMetaEnv {
+    readonly VITE_FIREBASE_APIKEY: string;
+    // Add other environment variables as needed
+  }
+  
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }

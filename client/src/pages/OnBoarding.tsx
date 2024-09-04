@@ -2,6 +2,7 @@ import { CallOutlined, MailOutline, PersonOutline } from "@mui/icons-material";
 import {
   Box,
   Button,
+  Hidden,
   IconButton,
   InputAdornment,
   Stack,
@@ -13,6 +14,7 @@ import { FormEvent, useState } from "react";
 import onboardinimage from "../assets/onboarding.png";
 import DialogComponent from "../Components/Dialog";
 import Heading from "../Components/shared/Heading";
+import { Link } from "react-router-dom";
 
 const OnBoarding = () => {
   const theme = useTheme();
@@ -24,7 +26,7 @@ const OnBoarding = () => {
   };
 
   return (
-    <Stack direction={"row"} width={"100%"} height={"100vh"}>
+    <Stack direction={"row"} width={"100%"} height={"100vh"} overflow={'hidden'}>
       {/* --------left side------- --- */}
       <Box width={"50%"} padding={"2rem 6rem"}>
         {/* ------------logo---------- */}
@@ -192,16 +194,18 @@ const OnBoarding = () => {
           >
           @careplus copyright
         </Typography>
+        <Link to={'/admin/dashboard'}>
         <Typography
        
-          variant="body2"
-          fontSize={"0.7rem"}
-          sx={{
-            color: theme.palette.text.secondary,
-          }}
-          >
+       variant="body2"
+       fontSize={"0.7rem"}
+       sx={{
+         color: theme.palette.text.secondary,
+        }}
+        >
          Admin
         </Typography>
+            </Link>
           </Stack>
       </Box>
 
@@ -219,8 +223,8 @@ const OnBoarding = () => {
             alt="onboarding_image"
             style={{
               width: "100%",
-              height: "95%", // Set the height to 100% of the parent container
-              borderRadius: "24px",
+              height: "100%", 
+              // borderRadius: "24px",
               //   height: "1000px",
               objectFit: "cover",
             }}
