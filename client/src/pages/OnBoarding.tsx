@@ -26,17 +26,31 @@ const OnBoarding = () => {
   };
 
   return (
-    <Stack direction={"row"} width={"100%"} height={"100vh"} overflow={'hidden'}>
+    <Stack
+      sx={{
+        flexDirection: { xs: "column", md: "row" },
+        overflow: { xs: "none", md: "hidden" },
+        width: { xs :"100%", md: "100%" },
+        height: { xs: "100vh", md: "100vh" },
+      }}
+    >
       {/* --------left side------- --- */}
-      <Box width={"50%"} padding={"2rem 6rem"}>
+      <Box
+        sx={{
+          width: { xs: "100%", md: "50%" },
+          padding: { xs: " 3rem 1.5rem", md: "2rem 6rem" },
+        }}
+      >
         {/* ------------logo---------- */}
 
         <Heading />
 
         {/* ---------------------- content------------------------------- */}
-        <Box marginTop={13}>
+        <Box  sx={{
+          marginTop:{xs:6,md:13}
+        }}>
           {/* ------------title---------- */}
-          <Typography variant="h4" fontSize={"2.1rem"}>
+          <Typography variant="h4" fontSize={"2.1rem"} fontWeight={'bold'}>
             Hi there,...
           </Typography>
           {/* ------------sub title---------- */}
@@ -180,37 +194,44 @@ const OnBoarding = () => {
         </Box>
 
         {/*-------------------------------- copyright ----------------------- */}
-        <Stack direction={'row'} sx={{
-             marginTop: "6.6rem",
-        }}>
-
-        <Typography
-        marginRight={'auto'}
-          variant="body2"
-          fontSize={"0.7rem"}
+        <Stack
+          direction={"row"}
           sx={{
-            color: theme.palette.text.secondary,
+            marginTop:{xs:'3.3rem', md:"6.6rem"},
           }}
-          >
-          @careplus copyright
-        </Typography>
-        <Link to={'/admin/dashboard'}>
-        <Typography
-       
-       variant="body2"
-       fontSize={"0.7rem"}
-       sx={{
-         color: theme.palette.text.secondary,
-        }}
         >
-         Admin
-        </Typography>
-            </Link>
-          </Stack>
+          <Typography
+            marginRight={"auto"}
+            variant="body2"
+            fontSize={"0.7rem"}
+            sx={{
+              color: theme.palette.text.secondary,
+            }}
+          >
+            @careplus copyright
+          </Typography>
+          <Link to={"/admin/dashboard"}>
+            <Typography
+              variant="body2"
+              fontSize={"0.7rem"}
+              sx={{
+                color: theme.palette.text.secondary,
+              }}
+            >
+              Admin
+            </Typography>
+          </Link>
+        </Stack>
       </Box>
 
       {/* --------right side ------------- */}
-      <Box width={"50%"} height={"100vh"}>
+      <Box
+        sx={{
+          paddingInline:{xs:'1.5rem'},
+          width: { xs: "100%", md: "50%" },
+          height: { xs: "1000px", md: "100vh" },
+        }}
+      >
         {/* ----------- image ----------- */}
         <Box
           sx={{
@@ -223,7 +244,7 @@ const OnBoarding = () => {
             alt="onboarding_image"
             style={{
               width: "100%",
-              height: "100%", 
+              height: "100%",
               // borderRadius: "24px",
               //   height: "1000px",
               objectFit: "cover",
