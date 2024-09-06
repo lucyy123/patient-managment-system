@@ -35,8 +35,9 @@ const DialogComponent = ({ handelOpen, open = true }: Props) => {
         onSubmit: handleOTP,
         sx: {
           backgroundColor: theme.palette.background.default,
-          padding: 2,
+          padding: {xs:1,md:2},
           borderRadius: "16px",
+          width:{xs:'85%'}
         },
       }}
     >
@@ -47,7 +48,7 @@ const DialogComponent = ({ handelOpen, open = true }: Props) => {
       />
 
       <DialogContent>
-        <Stack direction={"row"} gap={2}>
+        <Stack direction={"row"} gap={2} >
           {Array(6)
             .fill("")
             .map((ele,idx) => (
@@ -60,8 +61,8 @@ const DialogComponent = ({ handelOpen, open = true }: Props) => {
                     fontSize: "2rem",
                     color: "#24AE7C",
                     padding: "0.8rem",
-                    width: "2rem",
-                    height: "1.7rem",
+                    width: "2rem", 
+                     height:"1.7rem" ,
                   },
                 }}
                 sx={{

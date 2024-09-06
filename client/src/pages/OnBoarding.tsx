@@ -228,7 +228,7 @@ const OnBoarding = () => {
       {/* --------right side ------------- */}
       <Box
         sx={{
-          display: { xs: "none" },
+          display: { xs: "none",md:'block' },
           paddingInline: { xs: "1.5rem" },
           width: "50%",
           height: "100vh",

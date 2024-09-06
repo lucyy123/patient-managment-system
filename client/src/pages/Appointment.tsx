@@ -1,20 +1,17 @@
+import { CalendarTodayOutlined, Search } from "@mui/icons-material";
 import {
-    CalendarTodayOutlined,
-    Search
-} from "@mui/icons-material";
-import {
-    Box,
-    Button,
-    Grid,
-    IconButton,
-    InputAdornment,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    Stack,
-    TextField,
-    Typography,
-    useTheme
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import leftImag from "../assets/appointment_image.jpeg";
 import Heading from "../Components/shared/Heading";
@@ -24,28 +21,26 @@ import { useNavigate } from "react-router";
 
 const Appointment = () => {
   const theme = useTheme();
-const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate(
-      '/success'
-    )
+    navigate("/success");
   };
 
   return (
     <Stack
       sx={{
-        flexDirection:{xs:'column',md:'row'},
+        flexDirection: { xs: "column", md: "row" },
         width: "100%",
         height: "100vh",
       }}
     >
       {/* ------------left side ------------- */}
-      <Box  
-      sx={{
-        width:{xs:'100%',md:'75%'},
-        padding:{xs:'3rem 1rem',md:'2rem 6rem'}
-      }}
+      <Box
+        sx={{
+          width: { xs: "100%", md: "75%" },
+          padding: { xs: "3rem 1rem", md: "2rem 6rem" },
+        }}
       >
         <Heading />
 
@@ -57,175 +52,170 @@ const navigate = useNavigate()
         />
 
         {/* --------------------------- form content-------------------------------- */}
-<Box sx={{
-  mt:{xs:2,md:5}
-}}>
+        <Box
+          sx={{
+            mt: { xs: 2, md: 5 },
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              {/* ------------------------- Doctor------------------------------ */}
+              <Grid item xs={12} md={12}>
+                <Stack gap={1}>
+                  <Typography
+                    sx={{
+                      color: theme.palette.text.secondary,
+                    }}
+                  >
+                    Doctor
+                  </Typography>
 
-        <form onSubmit={handleSubmit}>
-      
+                  <Select
+                    size="small"
+                    fullWidth
+                    sx={{
+                      border: "1px solid",
+                      color: "white",
+                    }}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    input={
+                      <OutlinedInput
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <IconButton edge="start">
+                              <Search
+                                sx={{
+                                  color: "#CDCECF",
+                                  marginInline: "0.23rem",
+                                  background: "none",
+                                }}
+                              />
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                    }
+                    //   value={}
+                    //   label="Select Physician"
 
-          <Grid container spacing={3}>
-            {/* ------------------------- Doctor------------------------------ */}
-            <Grid item xs={12} md={12}>
-              <Stack gap={1}>
-                <Typography
-                  sx={{
-                    color: theme.palette.text.secondary,
-                  }}
-                >
-                  Doctor
-                </Typography>
+                    //   onChange={}
+                  >
+                    <MenuItem value={10}>Dr. Atifa Khan</MenuItem>
+                    <MenuItem value={20}>Dr. Faizan khan</MenuItem>
+                    <MenuItem value={30}>Dr. Shiba</MenuItem>
+                  </Select>
+                </Stack>
+              </Grid>
 
-                <Select
-                  size="small"
+              {/* ------------------------- Reason For appointment------------------------------ */}
+              <Grid item xs={12} md={6}>
+                <Stack gap={1}>
+                  <Typography
+                    sx={{
+                      color: theme.palette.text.secondary,
+                    }}
+                  >
+                    Reason For appointment
+                  </Typography>
+                  <TextField
+                    //   size="small"
+                    sx={{
+                      border: "1px solid",
+                      borderRadius: "8px",
+                    }}
+                    fullWidth
+                    multiline
+                    rows={3}
+                    placeholder="ex:monthly check-up"
+                  />
+                </Stack>
+              </Grid>
+              {/* -------------------------additional comment / notes------------------------------ */}
+
+              <Grid item xs={12} md={6}>
+                <Stack gap={1}>
+                  <Typography
+                    sx={{
+                      color: theme.palette.text.secondary,
+                    }}
+                  >
+                    additional comment / notes
+                  </Typography>
+                  <TextField
+                    //   size="small"
+
+                    sx={{
+                      border: "1px solid",
+                      borderRadius: "8px",
+                    }}
+                    multiline
+                    rows={3}
+                    fullWidth
+                    placeholder="ex:preffer afternoon apppointment if possible"
+                  />
+                </Stack>
+              </Grid>
+
+              {/* ------------------------- expected appointment date------------------------------ */}
+              <Grid item xs={12} md={12}>
+                <Stack gap={1}>
+                  <Typography
+                    sx={{
+                      color: theme.palette.text.secondary,
+                    }}
+                  >
+                    expected appointment date
+                  </Typography>
+                  <TextField
+                    size="small"
+                    type="date"
+                    sx={{
+                      border: "1px solid",
+                      borderRadius: "8px",
+                    }}
+                    fullWidth
+                    placeholder="Select Your Birth Date"
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              edge="start"
+                            >
+                              {/* ----------------- Calender icon---------------- */}
+                              <CalendarTodayOutlined
+                                sx={{
+                                  color: "#CDCECF",
+                                  marginInline: "0.23rem",
+                                  background: "none",
+                                }}
+                              />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+                </Stack>
+
+                <Button
+                  type="submit"
+                  variant="contained"
                   fullWidth
                   sx={{
-                    border: "1px solid",
-                    color: "white",
-                  }}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  input={
-                    <OutlinedInput
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <IconButton edge="start">
-                            <Search
-                              sx={{
-                                color: "#CDCECF",
-                                marginInline: "0.23rem",
-                                background: "none",
-                              }}
-                            />
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  }
-                  //   value={}
-                  //   label="Select Physician"
-
-                  //   onChange={}
-                >
-                  <MenuItem value={10}>Dr. Atifa Khan</MenuItem>
-                  <MenuItem value={20}>Dr. Faizan khan</MenuItem>
-                  <MenuItem value={30}>Dr. Shiba</MenuItem>
-                </Select>
-              </Stack>
-            </Grid>
-
-            {/* ------------------------- Reason For appointment------------------------------ */}
-            <Grid item  xs ={12} md={6}>
-              <Stack gap={1}>
-                <Typography
-                  sx={{
-                    color: theme.palette.text.secondary,
+                    textTransform: "none",
+                    color: "#fff",
+                    my: 5,
                   }}
                 >
-                  Reason For appointment
-                </Typography>
-                <TextField
-                //   size="small"
-                  sx={{
-                    border: "1px solid",
-                    borderRadius: "8px",
-                  }}
-                  fullWidth
-                  multiline
-                  rows={3}
-                  placeholder="ex:monthly check-up"
-                />
-              </Stack>
+                  Submit and contiue{" "}
+                </Button>
+              </Grid>
             </Grid>
-            {/* -------------------------additional comment / notes------------------------------ */}
-
-            <Grid item xs={12} md={6}>
-              <Stack gap={1}>
-                <Typography
-                  sx={{
-                    color: theme.palette.text.secondary,
-                  }}
-                >
-                  additional comment / notes
-                </Typography>
-                <TextField
-                //   size="small"
-                
-              
-                  sx={{
-                    border: "1px solid",
-                    borderRadius: "8px",
-                    
-                  }}
-
-                  multiline
-                  rows={3}
-                  fullWidth
-                  placeholder="ex:preffer afternoon apppointment if possible"
-                />
-              </Stack>
-            </Grid>
-
-            {/* ------------------------- expected appointment date------------------------------ */}
-            <Grid item xs={12} md={12}>
-              <Stack gap={1}>
-                <Typography
-                  sx={{
-                    color: theme.palette.text.secondary,
-                  }}
-                >
-                  expected appointment date
-                </Typography>
-                <TextField
-                  size="small"
-                  type="date"
-                  sx={{
-                    border: "1px solid",
-                    borderRadius: "8px",
-                  }}
-                  fullWidth
-                  placeholder="Select Your Birth Date"
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            edge="start"
-                          >
-                            {/* ----------------- Calender icon---------------- */}
-                            <CalendarTodayOutlined
-                              sx={{
-                                color: "#CDCECF",
-                                marginInline: "0.23rem",
-                                background: "none",
-                              }}
-                            />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-              </Stack>
-
-              <Button
-              type="submit"
-                variant="contained"
-                fullWidth
-                sx={{
-                  textTransform: "none",
-                  color: "#fff",
-                  my: 5,
-                }}
-              >
-                Submit and contiue{" "}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-</Box>
-
+          </form>
+        </Box>
       </Box>
       {/* -----------------right side image */}
       <LeftImage image={leftImag} />

@@ -4,6 +4,7 @@ import {
 } from "@mui/icons-material";
 import {
   Avatar,
+  Box,
   Button,
   Container,
   Stack,
@@ -39,7 +40,7 @@ const Success = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          mt: "8rem",
+          mt: {xs:'4rem',md:"8rem"},
         }}
       >
         <CheckCircleOutlineOutlined
@@ -51,7 +52,7 @@ const Success = () => {
         />
         {/* ------------------ success message----------------------------- */}
 
-        <Typography variant="h4" fontWeight={700} fontSize={"2.3rem"}>
+        <Typography variant="h4" fontWeight={700} fontSize={{xs:'1.3rem',md:'2.3rem'}}>
           {" "}
           Your
           <span
@@ -68,7 +69,7 @@ const Success = () => {
         </Typography>
         {/* ------------------ sub titile----------------------------- */}
 
-        <Typography color={theme.palette.text.secondary}>
+        <Typography color={theme.palette.text.secondary} fontSize={{xs:'0.7rem',md:'1.2rem'}}>
           We'll be in touch shortly to confirm.
         </Typography>
 
@@ -76,39 +77,44 @@ const Success = () => {
 
         <Stack
           direction={"row"}
-          gap={2}
+          gap={{xs:1,md:2}}
           sx={{
             borderTop: "1px solid #363A3D99",
             borderBottom: "1px solid #363A3D99",
-            py: "2rem",
+            py: {xs:'0.8rem',md:"2rem"},
           }}
         >
-          <Typography color={theme.palette.text.secondary} fontSize={"1.5rem"}>
+          <Typography color={theme.palette.text.secondary} fontSize={{xs:'0.8rem',md:'1.5rem'}}>
             Requested Appointment Details
           </Typography>
 
           <Button
             variant="outlined"
             sx={{
+              display:'flex',
+              flexDirection:{xs:'column',md:'row'},
               textTransform: "none",
               color: "#fff",
-              gap: 1,
+              gap: {xs:0,md:1},
             }}
           >
             <Avatar
               alt="Remy Sharp"
               src={logo}
               sx={{
-                width: 30,
-                height: 30,
+                width: {xs:25,md:30},
+                height: {xs:25,md:30},
+             
               }}
+              
             />
             Dr.Atifa Khan
           </Button>
 
-          <span
-            style={{
+          <Box
+            sx={{
               display: "flex",
+              flexDirection:{xs:'column',md:'row'},
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -122,7 +128,7 @@ const Success = () => {
               }}
             />{" "}
             23 June 2024 - 5:00 PM{" "}
-          </span>
+          </Box>
         </Stack>
       </Stack>
       <Link to={"/appointment"}>
