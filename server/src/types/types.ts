@@ -38,8 +38,22 @@ export interface IUser extends Document {
     updatedAt: Date;
     personalInfo: PersonalInfo;
     medicalInfo: MedicalInfo;
-    identification: Identificatin
+    identification: Identificatin;
+    appointments:string[];
+    role:string
+    otp:string | undefined;
+    otpExpires:string  | undefined;
+    isVerified:boolean;
 }
+
+export type OTPverificationReqBody = {
+    phoneNumber:string;
+    otp:string;
+}
+
+
+
+
 //*-------------------------------------  E R R O R  H A N D L I NG -------------------------------------
 //----------------------------- try catch handler -------------------
 // user type for prop OR functions
@@ -59,11 +73,27 @@ export type UserRegisterBody = {
     personalInfo?: PersonalInfo;
     medicalInfo?: MedicalInfo;
     identification?: Identificatin
+    appointments?:string []
+    role?:string
 }
 
 //------------------------------Appointments------------------------------
 
 
 export type AppointmentBody = {
+    status: string;
+    user: string;
+    physicianName: string;
+    time: string
+    date:Date,
+    discriptions:string
 
+}
+
+
+//*------------------------------------------- CACHING -------------------------------------------
+
+export type InvalidateCacheType ={
+    user:boolean,
+    appointment:boolean
 }

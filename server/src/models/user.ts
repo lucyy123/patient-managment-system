@@ -86,9 +86,32 @@ const schema = new mongoose.Schema({
             type: String
         }
 
+    },
+
+    appointments: [
+        {
+
+            type: mongoose.Types.ObjectId,
+            ref: 'Appointment'
+
+        }
+    ],
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+    otp: {
+        type: String
+    },
+    otpExpires: {
+        type: Date
+    },
+
+    isVerified: {
+        type: Boolean,
+        default: false
     }
-
-
 
 }, { timestamps: true })
 
@@ -108,4 +131,4 @@ schema.virtual('age').get(function () {
 });
 
 
-export  const User = mongoose.model<IUser>("User", schema)
+export const User = mongoose.model<IUser>("User", schema)

@@ -71,6 +71,27 @@ const schema = new mongoose.Schema({
         image: {
             type: String
         }
+    },
+    appointments: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'Appointment'
+        }
+    ],
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+    otp: {
+        type: String
+    },
+    otpExpires: {
+        type: Date
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 schema.virtual('age').get(function () {

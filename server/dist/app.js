@@ -3,11 +3,15 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+import NodeCache from 'node-cache';
 import { ErrorMiddleware } from './middlewares/error.js';
 import { mongoDataBase } from './utils/mongoDb.js';
 //*------------------------------ routes imports---------------------------
+import appointmentRoutes from './routes/appointment.js';
 import userRoutes from './routes/user.js';
-config();
+config({
+    path: './.env',
+});
 mongoDataBase(process.env.MONGO_URL);
 const app = express();
 const port = process.env.SERVER || 8001;
@@ -25,8 +29,11 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 //--------preflights-------
 app.options('*', cors(corsOptions));
+//*------------------------------------- Caching -----------------------------
+export const myCache = new NodeCache();
 //*------------------------ routes----------------------------
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/appointment', appointmentRoutes);
 //*----------------------- server listening-------------------
 app.use(ErrorMiddleware);
 app.listen((port), () => {
