@@ -67,22 +67,9 @@ export const verifOTP = TryCatch(async (req, res, next) => {
         message: 'User Verified Successfully'
     });
 });
-//*--------------------------------------- get user ------------------------------------------------------
-export const getUser = TryCatch(async (req, res, next) => {
-    const { id: UserId } = req.params;
-    if (!UserId)
-        return next(new ErrorHanlder("User Id Not Found ", 404));
-    const user = await User.findById(UserId).populate('appointments');
-    if (!user)
-        return next(new ErrorHanlder('User Not Found', 404));
-    res.status(200).json({
-        success: true,
-        user
-    });
-});
 //*---------------------------------------  user update --------------------------------------------------
 export const updateUser = TryCatch(async (req, res, next) => {
-    const { id: UserId } = req.params;
+    const UserId = req.user.userId;
     if (!UserId)
         return next(new ErrorHanlder('User Id not found', 404));
     const { email, name, phoneNumber, identification, medicalInfo, personalInfo, appointments } = req.body;
@@ -108,5 +95,19 @@ export const updateUser = TryCatch(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: 'Information Updated Successfully'
+    });
+});
+//*--------------------------------------- get user ------------------------------------------------------
+export const getUser = TryCatch(async (req, res, next) => {
+    const UserId = req.user.userId;
+    // const id = String(UserId?.userId)
+    if (!UserId)
+        return next(new ErrorHanlder("User Id Not Found ", 404));
+    const user = await User.findById(UserId).populate('appointments');
+    if (!user)
+        return next(new ErrorHanlder('User Not Found', 404));
+    res.status(200).json({
+        success: true,
+        user
     });
 });

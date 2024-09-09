@@ -1,5 +1,6 @@
 import express from 'express';
 import { getUser, updateUser, userRegister, verifOTP } from '../controllers/user.js';
+import { authenticated } from '../middlewares/auth.js';
 
 
 
@@ -13,9 +14,12 @@ app.post('/verify/new',verifOTP)
 
 
 
-//*     end point  PUT :- /api/v1/user/UserId
-//*     end point  GET :- /api/v1/user/UserId
-app.route('/:id'). put(updateUser).get(getUser)
+//*     end point  PUT :- /api/v1/user/update
+app.put('/update',authenticated, updateUser)
+
+
+//*     end point  GET :- /api/v1/user/get
+app.get('/get',authenticated,getUser)
 
 
 export default app;

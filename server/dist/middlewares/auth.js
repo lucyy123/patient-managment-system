@@ -1,10 +1,21 @@
+import { config } from 'dotenv';
+import jwt from 'jsonwebtoken';
 import { User } from "../models/user.js";
 import ErrorHanlder from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/tryCatch.js";
+config();
+export const authenticated = TryCatch(async (req, res, next) => {
+    const token = req.cookies.authToken;
+    if (!token)
+        return next(new ErrorHanlder("Token not found", 404));
+    const decode = jwt.verify(token, process.env.SECRET_TOKEN_KEY);
+    req.user = decode;
+    next();
+});
 export const AdminOnly = TryCatch(async (req, res, next) => {
     const { id } = req.query;
     if (!id)
-        return next(new ErrorHanlder("Please verify first", 404));
+        return next(new ErrorHanlder("you don't have the permission ", 403));
     const user = await User.findById(id);
     if (!user) {
         return next(new ErrorHanlder("Invalid Id. not found", 404));

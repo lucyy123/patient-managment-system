@@ -3,6 +3,7 @@
 // ----------------------------  user --------------------------------------
 
 import { NextFunction, Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 type MedicalInfo = {
     allergies: string[];
@@ -53,7 +54,6 @@ export type OTPverificationReqBody = {
 
 
 
-
 //*-------------------------------------  E R R O R  H A N D L I NG -------------------------------------
 //----------------------------- try catch handler -------------------
 // user type for prop OR functions
@@ -62,6 +62,15 @@ export type ControllerType = (
     res: Response,
     next: NextFunction
 ) => Promise<void | Response<any, Record<string, any>>>;
+
+
+// authentications
+export interface AuthenticatedRequest extends Request {
+    user?: string | JwtPayload; // 'user' can be string or JwtPayload based on token content
+  }
+  
+
+
 
 //*-------------------------------------------- R O U T E S------------------------------------
 //------------------------------- User------------------------------------

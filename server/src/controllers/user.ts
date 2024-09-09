@@ -1,8 +1,8 @@
 import { config } from 'dotenv';
 import { NextFunction, Request, Response } from "express";
-import jwt, { Secret } from 'jsonwebtoken';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import { User } from '../models/user.js';
-import { OTPverificationReqBody, UserRegisterBody } from "../types/types.js";
+import { AuthenticatedRequest, OTPverificationReqBody, UserRegisterBody } from "../types/types.js";
 import ErrorHanlder from "../utils/errorHandler.js";
 import { generateOTP, sendOtp } from "../utils/OTP.js";
 import { TryCatch } from "../utils/tryCatch.js";
@@ -99,32 +99,10 @@ export const verifOTP = TryCatch(async (req: Request<{}, {}, OTPverificationReqB
 })
 
 
-//*--------------------------------------- get user ------------------------------------------------------
-
-export const getUser = TryCatch(async (req, res, next) => {
-    const { id: UserId } = req.params;
-
-    if (!UserId) return next(new ErrorHanlder(
-        "User Id Not Found ", 404
-    ))
-
-    const user = await User.findById(UserId).populate('appointments')
-
-    if (!user) return next(new ErrorHanlder('User Not Found', 404))
-
-    res.status(200).json({
-        success: true,
-        user
-    })
-
-
-})
-
-
 //*---------------------------------------  user update --------------------------------------------------
 
-export const updateUser = TryCatch(async (req, res, next) => {
-    const { id: UserId } = req.params
+export const updateUser = TryCatch(async (req:AuthenticatedRequest, res, next) => {
+    const UserId  = (req.user as JwtPayload).userId;
 
     if (!UserId) return next(new ErrorHanlder('User Id not found', 404))
     const { email, name, phoneNumber, identification, medicalInfo, personalInfo, appointments } = req.body
@@ -157,4 +135,29 @@ export const updateUser = TryCatch(async (req, res, next) => {
         message: 'Information Updated Successfully'
     })
 })
+
+
+//*--------------------------------------- get user ------------------------------------------------------
+
+export const getUser = TryCatch(async (req:AuthenticatedRequest, res, next) => {
+    const UserId  = (req.user as JwtPayload).userId;
+    // const id = String(UserId?.userId)
+
+    if (!UserId) return next(new ErrorHanlder(
+        "User Id Not Found ", 404
+    ))
+
+    const user = await User.findById(UserId).populate('appointments')
+
+    if (!user) return next(new ErrorHanlder('User Not Found', 404))
+
+    res.status(200).json({
+        success: true,
+        user
+    })
+
+
+})
+
+
 

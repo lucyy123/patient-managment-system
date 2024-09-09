@@ -51,6 +51,7 @@ export const newAppointment = TryCatch(
 export const updateAppointment = TryCatch(async (req, res, next) => {
     
         // admin Id (throug reuest)
+      
         const { id } = req.params;
         
         if (!id) return next(new ErrorHanlder(
