@@ -24,7 +24,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router";
-import pateintsImage from "../assets/patients_page_image.png";
 import FileUploader from "../Components/FileUploader";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
@@ -753,7 +752,7 @@ const PatientsForm = () => {
 
       {/* ----------------------------------image------------------------------- */}
 
-      <LeftImage image={pateintsImage} />
+      <LeftImage image={'/patients_page_image.png'} />
     </Stack>
   );
 };

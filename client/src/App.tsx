@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Loader from "./Components/Loader";
+import { Toaster } from "react-hot-toast";
 
 //*-------- normal imports--------------------
 
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/admin/dashboard" element={<Dashboard />} />
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center"/>
     </Router>
   );
 };

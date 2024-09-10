@@ -10,18 +10,59 @@ import {
   useTheme,
 } from "@mui/material";
 import { FormEvent, useState } from "react";
-import onboardinimage from '../assets/onboarding.png';
 import DialogComponent from "../Components/Dialog";
 import Heading from "../Components/shared/Heading";
 import { Link } from "react-router-dom";
+import { useUserRegisterMutation } from "../redux/apis/userApi";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { UserRegistrationResMsg } from "../vite-env";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { userExist } from "../redux/reducers/user";
 
 const OnBoarding = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+  });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [userRegister] = useUserRegisterMutation();
+  const dispatch = useDispatch()
+
+
+  //?----------------------- handlers--------------------------------
+  //* ---------- FOR SUBMITTING FORM
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setOpen(true);
+        setOpen(true); // opne the OTP dialogue
+    try {
+      const res = await userRegister(userDetails).unwrap();
+      if (res.success) {
+        toast.success(res.message.toString());
+        console.log('res.message:', res.message)
+        dispatch(userExist(res.user!))
+        setOpen(true); // opne the OTP dialogue
+      }
+
+    } catch (error) {
+      console.log("error:", error);
+      const err = error as FetchBaseQueryError;
+      const data = err.data as UserRegistrationResMsg;
+      toast.error(data.message);
+    }
+  };
+  //*-------------- FOR ONCHANGING
+
+  const hanldeChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setUserDetails({ ...userDetails, [name]: value });
   };
 
   return (
@@ -89,6 +130,11 @@ const OnBoarding = () => {
                     placeholder="Enter Your Name"
                     size="small"
                     fullWidth
+                    name="name"
+                    value={userDetails.name}
+                    required={true}
+                    onChange={hanldeChange}
+                  
                     slotProps={{
                       input: {
                         startAdornment: (
@@ -101,7 +147,7 @@ const OnBoarding = () => {
                               <PersonOutline
                                 sx={{
                                   color: "#CDCECF",
-                                  marginInline: "0.23rem",
+                                  marginInline: "0.2rem",
                                   background: "none",
                                 }}
                               />
@@ -121,6 +167,10 @@ const OnBoarding = () => {
                     placeholder="Enter Your Email"
                     size="small"
                     fullWidth
+                    name="email"
+                    required={true}
+                    value={userDetails.email}
+                    onChange={hanldeChange}
                     slotProps={{
                       input: {
                         startAdornment: (
@@ -133,7 +183,7 @@ const OnBoarding = () => {
                               <MailOutline
                                 sx={{
                                   color: "#CDCECF",
-                                  marginInline: "0.23rem",
+                                  marginInline: "0.2rem",
                                   background: "none",
                                 }}
                               />
@@ -152,6 +202,11 @@ const OnBoarding = () => {
                     placeholder="Enter Your Number"
                     size="small"
                     fullWidth
+                    name="phoneNumber"
+                    required={true}
+                    value={userDetails.phoneNumber}
+                    onChange={hanldeChange}
+                
                     slotProps={{
                       input: {
                         startAdornment: (
@@ -159,12 +214,13 @@ const OnBoarding = () => {
                             <IconButton
                               aria-label="toggle password visibility"
                               edge="start"
+                             
                             >
                               {/* ----------------- user icon---------------- */}
                               <CallOutlined
                                 sx={{
                                   color: "#CDCECF",
-                                  marginInline: "0.23rem",
+                                  marginInline: "0.2rem",
                                   background: "none",
                                 }}
                               />
@@ -228,7 +284,7 @@ const OnBoarding = () => {
       {/* --------right side ------------- */}
       <Box
         sx={{
-          display: { xs: "none",md:'block' },
+          display: { xs: "none", md: "block" },
           paddingInline: { xs: "1.5rem" },
           width: "50%",
           height: "100vh",
@@ -242,7 +298,7 @@ const OnBoarding = () => {
           }}
         >
           <img
-            src={onboardinimage}
+            src={'/onboarding.png'}
             alt="onboarding_image"
             style={{
               width: "100%",

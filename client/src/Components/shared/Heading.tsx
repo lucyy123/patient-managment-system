@@ -1,5 +1,4 @@
 import { Box, Paper, Stack, Typography } from "@mui/material";
-import logo from "../../assets/logo.png";
 
 const Heading = () => {
   return (
@@ -19,7 +18,7 @@ const Heading = () => {
         }}
       >
         <img
-          src={logo}
+          src={'/logo.png'}
           alt="health_logo"
           style={{
             height: "30px",

@@ -11,9 +11,8 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import Heading from "../Components/shared/Heading";
-import logo from "../assets/doctor.avif";
 import { Link } from "react-router-dom";
+import Heading from "../Components/shared/Heading";
 
 const Success = () => {
   const theme = useTheme();
@@ -100,7 +99,7 @@ const Success = () => {
           >
             <Avatar
               alt="Remy Sharp"
-              src={logo}
+              src={'/doctor.avif'}
               sx={{
                 width: {xs:25,md:30},
                 height: {xs:25,md:30},

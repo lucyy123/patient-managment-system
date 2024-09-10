@@ -1,6 +1,5 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import uploadLogo from "../assets/upload.png";
 import { Stack, Typography, useTheme } from "@mui/material";
 
 const FileUploader = () => {
@@ -49,7 +48,7 @@ const FileUploader = () => {
           }}
         >
           <img
-            src={uploadLogo}
+            src={'/upload.png'}
             alt="upload_icon "
             style={{
               height: "2rem",

@@ -1,5 +1,7 @@
 import { EventAvailableOutlined, HourglassEmptyOutlined, WarningAmberOutlined } from "@mui/icons-material";
-import { CardsContentsType } from "../vite-env";
+import { CardsContentsType, UserRegistrationResMsg } from "../vite-env";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import toast from "react-hot-toast";
 export const privacyContents =
 
 [
@@ -29,3 +31,9 @@ export const dashboardCardsContent:CardsContentsType[] = [
 
     }
 ]
+
+
+export const catchError = (error:FetchBaseQueryError , st:UserRegistrationResMsg )=>{
+    const data = error.data as typeof st;
+    toast.error(data.message);
+}

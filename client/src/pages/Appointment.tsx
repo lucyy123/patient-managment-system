@@ -13,11 +13,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import leftImag from "../assets/appointment_image.jpeg";
+import { useNavigate } from "react-router";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
-import { useNavigate } from "react-router";
 
 const Appointment = () => {
   const theme = useTheme();
@@ -218,7 +217,7 @@ const Appointment = () => {
         </Box>
       </Box>
       {/* -----------------right side image */}
-      <LeftImage image={leftImag} />
+      <LeftImage image={'/appointment_image.jpeg'} />
     </Stack>
   );
 };

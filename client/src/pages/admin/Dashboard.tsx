@@ -1,19 +1,18 @@
 import {
-    Avatar,
-    Box,
-    Button,
-    Stack,
-    Typography,
-    useTheme,
+  Avatar,
+  Box,
+  Button,
+  Stack,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
-import logo from  "../../assets/doctor.avif";
+import { useState } from "react";
 import AppointmentCard from "../../Components/AppointmentCard";
 import Heading from "../../Components/shared/Heading";
 import SubHeading from "../../Components/shared/SubHeading";
 import AdminTable from "../../Components/Table";
 import { TableRowsType } from "../../vite-env";
-import { useState } from "react";
 import AppointmentDialogue from "./AppointmentDialogue";
 import CancelDialogue from "./CancelDailog";
 
@@ -123,7 +122,7 @@ const Dashboard = () => {
 
         <Stack marginLeft={"auto"} direction={"row"} gap={1}>
           <Avatar
-            src={logo}
+            src={'/doctor.avif'}
             alt="admin_avatar"
             sx={{
               height: "2rem",
