@@ -1,14 +1,19 @@
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Stack, Typography, useTheme } from "@mui/material";
+import { setRef, Stack, Typography, useTheme } from "@mui/material";
 
-const FileUploader = () => {
+type Props = {
+  file: File | undefined;
+  setFile: React.Dispatch<React.SetStateAction<File | undefined>>;
+};
+
+const FileUploader = ({ file, setFile }: Props) => {
   const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
+    console.log("acceptedFiles:", acceptedFiles[0]);
+    setFile(acceptedFiles[0]);
   }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const file = [];
   const theme = useTheme();
 
   return (
@@ -27,16 +32,13 @@ const FileUploader = () => {
     >
       <input {...getInputProps()} />
 
-      {file && file.length > 0 ? (
-        <img
-          src=""
-          alt="uploaded_image"
-          style={{
-            maxHeight: "25rem",
-            overflow: "hidden",
-            objectFit: "cover",
-          }}
-        />
+      {file ? (
+        <Stack direction={"row"} gap={5} alignItems={"center"}>
+          <Typography variant="subtitle1" fontWeight={"bold"}>
+            File Name
+          </Typography>
+          <Typography variant="subtitle2"> {file.name}</Typography>
+        </Stack>
       ) : (
         <div
           style={{
@@ -48,12 +50,12 @@ const FileUploader = () => {
           }}
         >
           <img
-            src={'/upload.png'}
+            src={"/upload.png"}
             alt="upload_icon "
             style={{
               height: "2rem",
               width: "2rem",
-              margin:'0.3rem 0rem',
+              margin: "0.3rem 0rem",
             }}
           />
 

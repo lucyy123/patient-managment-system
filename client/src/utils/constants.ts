@@ -1,7 +1,7 @@
 import { EventAvailableOutlined, HourglassEmptyOutlined, WarningAmberOutlined } from "@mui/icons-material";
-import { CardsContentsType, UserRegistrationResMsg } from "../vite-env";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import toast from "react-hot-toast";
+import { CardsContentsType, UserRegistrationResMsg } from "../vite-env";
 export const privacyContents =
 
 [
@@ -33,7 +33,46 @@ export const dashboardCardsContent:CardsContentsType[] = [
 ]
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const catchError = (error:FetchBaseQueryError , st:UserRegistrationResMsg )=>{
     const data = error.data as typeof st;
     toast.error(data.message);
+}
+
+
+//------------------- Today Date formate -------------
+const today = new Date()
+const getFullYear = today.getFullYear();
+const getMonth = today.getMonth()+1
+const getDate = today.getDate()
+export const getTime = today.getTime()
+
+export const formatedDate = new Date ( `${getFullYear}-${getMonth}-${getDate}`) 
+
+
+export function convertDateFormat(dateString:string ) {
+    // Split the date string by '/'
+    const parts = dateString.split('-');
+
+    // Check if the parts array has the correct length
+    if (parts.length !== 3) {
+        throw new Error('Invalid date format. Please use YYYY/MM/DD.');
+    }
+
+    // Rearrange the parts to DD/MM/YYYY
+    const convertedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return convertedDate;
+}
+
+export function convertTimeFormate (timeString:string){
+    const parts= timeString.split(":")
+    let hours = Number(parts[0])
+    let res;
+    if(hours>12){
+        hours = hours - 12
+     return   res = `${hours}:${parts[1]} PM`
+    }
+    res = `${hours}:${parts[1] } AM`
+    return res
+
 }

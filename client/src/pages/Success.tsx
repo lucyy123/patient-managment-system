@@ -11,11 +11,24 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Heading from "../Components/shared/Heading";
-
+import useGetUser from "../hooks/useGetUser";
+import { useSelector } from "react-redux";
+import { AppointReducerInitStateType, UserReducerInitialState } from "../vite-env";
+import Loader from "../Components/Loader";
+import {AccessTime} from '@mui/icons-material';
+import dayjs, { Dayjs } from "dayjs";
+import { convertDateFormat, convertTimeFormate } from "../utils/constants";
 const Success = () => {
+  const { id } = useParams();
+  // useGetUser(id as string);
   const theme = useTheme();
+  const {loading,appointment} = useSelector((state:{appointmentReducer:AppointReducerInitStateType})=>state.appointmentReducer)
+
+if(loading) return <Loader></Loader>
+
+
   return (
     <Container
       maxWidth="md"
@@ -39,7 +52,7 @@ const Success = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          mt: {xs:'4rem',md:"8rem"},
+          mt: { xs: "4rem", md: "8rem" },
         }}
       >
         <CheckCircleOutlineOutlined
@@ -51,7 +64,11 @@ const Success = () => {
         />
         {/* ------------------ success message----------------------------- */}
 
-        <Typography variant="h4" fontWeight={700} fontSize={{xs:'1.3rem',md:'2.3rem'}}>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+          fontSize={{ xs: "1.3rem", md: "2.3rem" }}
+        >
           {" "}
           Your
           <span
@@ -68,7 +85,10 @@ const Success = () => {
         </Typography>
         {/* ------------------ sub titile----------------------------- */}
 
-        <Typography color={theme.palette.text.secondary} fontSize={{xs:'0.7rem',md:'1.2rem'}}>
+        <Typography
+          color={theme.palette.text.secondary}
+          fontSize={{ xs: "0.7rem", md: "1.2rem" }}
+        >
           We'll be in touch shortly to confirm.
         </Typography>
 
@@ -76,45 +96,46 @@ const Success = () => {
 
         <Stack
           direction={"row"}
-          gap={{xs:1,md:2}}
+          gap={{ xs: 1, md: 2 }}
           sx={{
             borderTop: "1px solid #363A3D99",
             borderBottom: "1px solid #363A3D99",
-            py: {xs:'0.8rem',md:"2rem"},
+            py: { xs: "0.8rem", md: "2rem" },
           }}
         >
-          <Typography color={theme.palette.text.secondary} fontSize={{xs:'0.8rem',md:'1.5rem'}}>
+          <Typography
+            color={theme.palette.text.secondary}
+            fontSize={{ xs: "0.8rem", md: "1.5rem" }}
+          >
             Requested Appointment Details
           </Typography>
 
           <Button
             variant="outlined"
             sx={{
-              display:'flex',
-              flexDirection:{xs:'column',md:'row'},
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
               textTransform: "none",
               color: "#fff",
-              gap: {xs:0,md:1},
+              gap: { xs: 0, md: 1 },
             }}
           >
             <Avatar
               alt="Remy Sharp"
-              src={'/doctor.avif'}
+              src={"/doctor.avif"}
               sx={{
-                width: {xs:25,md:30},
-                height: {xs:25,md:30},
-             
+                width: { xs: 25, md: 30 },
+                height: { xs: 25, md: 30 },
               }}
-              
             />
-            Dr.Atifa Khan
+           {appointment?.physicianName}
           </Button>
 
           <Box
             sx={{
               display: "flex",
-              flexDirection:{xs:'column',md:'row'},
-              justifyContent: "center",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "space-between",
               alignItems: "center",
             }}
           >
@@ -126,7 +147,19 @@ const Success = () => {
                 background: "none",
               }}
             />{" "}
-            23 June 2024 - 5:00 PM{" "}
+            <Typography sx={{
+              marginInline:"1rem"
+            }}>
+            { convertDateFormat(String(appointment?.date).split("T")[0])   } 
+            </Typography>
+            <Typography sx={{
+              display:'flex',
+              alignItems:'center',
+              gap:"1rem"
+            }}>
+             <AccessTime/>  {convertTimeFormate(String(appointment?.time))  }{" "}
+
+            </Typography>
           </Box>
         </Stack>
       </Stack>

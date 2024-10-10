@@ -90,12 +90,13 @@ export type UserRegisterBody = {
 
 
 export type AppointmentBody = {
-    status: string;
+    status?: string;
     user: string;
     physicianName: string;
     time: string
     date:Date,
-    discriptions:string
+    reason:string
+    additionalInfo?:string
 
 }
 

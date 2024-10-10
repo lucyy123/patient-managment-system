@@ -7,95 +7,89 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Dispatch, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import DialogHeader from "../pages/admin/DialogHeader";
-import { useVerifyUserMutation } from "../redux/apis/userApi";
-import { userExist } from "../redux/reducers/user";
-import { UserRegistrationResMsg } from "../vite-env";
-
+import {
+  useVerifyAdminMutation
+} from "../../redux/apis/adminApi";
+import { adminExist } from "../../redux/reducers/admin";
+import DialogHeader from "../admin/DialogHeader";
 
 type Props = {
   open?: boolean;
   handelOpen: Dispatch<React.SetStateAction<boolean>>;
-  phoneNumber:string;
-  title:string,
-  subtitle:string;
-  routeName:string
+  title: string;
+  subtitle: string;
+  routeName: string;
 };
 
-const DialogComponent = ({ handelOpen, open = true ,phoneNumber,subtitle,title,routeName}: Props) => {
-  const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
+const DialogPasskey = ({
+  handelOpen,
+  open = true,
+  subtitle,
+  title,
+  routeName,
+}: Props) => {
+  const [passKeys, setPassKeys] = useState(["", "", "", "", "", ""]);
   const theme = useTheme();
   const navigate = useNavigate();
-  const [loading,setLoading] = useState<boolean>()
-  const dispatch = useDispatch()
-  const [verifyUser] = useVerifyUserMutation();
-
-  
+  const [loading, setLoading] = useState<boolean>();
+  const dispatch = useDispatch();
+  const [verifyAdmin] = useVerifyAdminMutation();
 
   //*---------------------------------- H A N L D L E R S-------------------------------------
   //* 1.----------FOR SUBMIT------------
   const handleOTPSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const otp = otpValues.join("").toString();
-    console.log('otp:', otp)
-    console.log('phoneNumber:', phoneNumber)
-
+    const passkeys = passKeys.join("").toString();
+    console.log('passkeys:', passkeys)
+    setLoading(true);
     try {
-      setLoading(true)
-      const res = await verifyUser({
-        phoneNumber,
-        otp,
-      }).unwrap();
-
+      const res = await verifyAdmin({passkeys}).unwrap();
       if (res.success) {
-        toast.success(res.message);
-        dispatch(userExist(res.user!));
-        handelOpen(false);
+        dispatch(adminExist(res.admin));
+        toast.success(`Welcome ${res.admin.name}`);
         navigate(routeName);
         setLoading(false)
       }
     } catch (error) {
       console.log("error:", error);
-      const err = error as FetchBaseQueryError;
-      const data = err.data as UserRegistrationResMsg;
-      toast.error(data.message);
       setLoading(false)
-      // catchError(error,UserRegistrationResMsg)
+      toast.error('Error In loging')
     }
   };
 
   //* 2. ----------------FOR ONCHANGE----------------
 
   const hanldeChange = (value: string, index: number) => {
-    const newotp = [...otpValues];
-    console.log("newotp:", newotp);
+    const newPasskeys = [...passKeys];
 
-    newotp[index] = value;
+    newPasskeys[index] = value;
 
-    setOtpValues(newotp);
+    setPassKeys(newPasskeys);
 
     //*-----move focus to another box
-    if (value !== "" && index < otpValues.length - 1) {
+    if (value !== "" && index < passKeys.length - 1) {
       document.getElementById(`otp-input-${index + 1}`)?.focus();
     }
   };
 
   //* 3. ----------------------FOR BACKSPACE ----------------
 
-  const hanldekeydown = (e:React.KeyboardEvent<HTMLDivElement>, index: number) => {
+  const hanldekeydown = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    index: number
+  ) => {
     if (e.key == "Backspace") {
-      const newotp = [...otpValues];
+      const newPasskeys = [...passKeys];
 
       //*-------empty the opt box
-      newotp[index] = "";
+      newPasskeys[index] = "";
 
       //*---------- update the state
-      setOtpValues(newotp);
+      setPassKeys(newPasskeys);
 
       //*-----------change the focus to previous ---------
 
@@ -120,11 +114,7 @@ const DialogComponent = ({ handelOpen, open = true ,phoneNumber,subtitle,title,r
         },
       }}
     >
-      <DialogHeader
-        title={title}
-        subtitle={subtitle}
-        handelOpen={handelOpen}
-      />
+      <DialogHeader title={title} subtitle={subtitle} handelOpen={handelOpen} />
 
       <DialogContent>
         <Stack
@@ -132,7 +122,7 @@ const DialogComponent = ({ handelOpen, open = true ,phoneNumber,subtitle,title,r
           display={"flex"}
           justifyContent={"space-between"}
         >
-          {otpValues.map((value: string, idx) => (
+          {passKeys.map((value: string, idx) => (
             <TextField
               onChange={(e) => hanldeChange(e.target.value, idx)}
               value={value}
@@ -169,31 +159,30 @@ const DialogComponent = ({ handelOpen, open = true ,phoneNumber,subtitle,title,r
 
         {/* */}
 
-
-
-              <Button
-              fullWidth
-              type="submit"
+        <Button
+          fullWidth
+          type="submit"
+          sx={{
+            marginTop: "1.7rem",
+            textTransform: "none",
+            color: theme.palette.text.primary,
+          }}
+          variant="contained"
+        >
+          {loading ? (
+            <CircularProgress
+              size={27}
               sx={{
-                marginTop: "1.7rem",
-                textTransform: "none",
-                color: theme.palette.text.primary,
+                color: "#fff",
               }}
-              variant="contained"
-            >
-               {loading ? <CircularProgress
-                      size={27}
-                      sx={{
-                        color: "#fff",
-                      }}
-                    /> :"Verify"} 
-            </Button>
-
+            />
+          ) : (
+            "Go To Dashboard"
+          )}
+        </Button>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default DialogComponent;
-
-
+export default DialogPasskey;

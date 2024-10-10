@@ -9,6 +9,7 @@ import { mongoDataBase } from './utils/mongoDb.js';
 //*------------------------------ routes imports---------------------------
 import appointmentRoutes from './routes/appointment.js';
 import userRoutes from './routes/user.js';
+import adminRoutes from './routes/admin.js';
 config({
     path: './.env',
 });
@@ -16,7 +17,7 @@ mongoDataBase(process.env.MONGO_URL);
 const app = express();
 const port = process.env.SERVER || 8001;
 const corsOptions = {
-    origin: 'http://localhost:5173/',
+    origin: 'http://localhost:5173',
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
@@ -28,12 +29,13 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(morgan('dev'));
 //--------preflights-------
-app.options('*', cors(corsOptions));
+app.options('http://localhost:5173', cors(corsOptions));
 //*------------------------------------- Caching -----------------------------
 export const myCache = new NodeCache();
 //*------------------------ routes----------------------------
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/appointment', appointmentRoutes);
+app.use('/api/v1/admin', adminRoutes);
 //*----------------------- server listening-------------------
 app.use(ErrorMiddleware);
 app.listen((port), () => {

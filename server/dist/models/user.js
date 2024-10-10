@@ -3,102 +3,107 @@ import validator from "validator";
 const schema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Please enter your name"]
+        required: [true, "Please enter your name"],
     },
     email: {
         type: String,
         required: [true, "Please enter your email address"],
-        unique: [true,
-            'Email already exist'
-        ],
+        unique: [true, "Email already exist"],
         validate: validator.default.isEmail,
     },
     phoneNumber: {
         type: String,
         required: [true, "Please enter your phone number"],
-        unique: [true, 'Phone Number already exist']
+        unique: [true, "Phone Number already exist"],
     },
     personalInfo: {
         dateofBirth: {
-            type: Date
+            type: Date,
         },
         gender: {
-            type: String
+            type: String,
         },
         address: {
-            type: String
+            type: String,
         },
         occupation: {
-            type: String
+            type: String,
         },
         emergencyContName: {
             type: String,
         },
         emergencyContNumber: {
             type: String,
-        }
+        },
     },
     medicalInfo: {
         primaryCarePhy: {
-            type: String
+            type: String,
         },
         insuranceProvider: {
-            type: String
+            type: String,
         },
         insurancePolicyNumber: {
-            type: String
+            type: String,
         },
         allergies: {
-            type: [String]
+            type: [String],
         },
         currentMedications: {
-            type: String
+            type: String,
         },
         familyMedicalHistory: {
-            type: String
+            type: String,
         },
         userPastMedicalHistory: {
-            type: String
-        }
+            type: String,
+        },
     },
     identification: {
         identificationType: {
-            type: String
+            type: String,
         },
         identificationNumber: {
-            type: String
+            type: String,
         },
-        image: {
-            type: String
-        }
     },
     appointments: [
         {
             type: mongoose.Types.ObjectId,
-            ref: 'Appointment'
-        }
+            ref: "Appointment",
+        },
     ],
     role: {
         type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
+        enum: ["user", "admin"],
+        default: "user",
     },
     otp: {
-        type: String
+        type: String,
     },
     otpExpires: {
-        type: Date
+        type: Date,
     },
     isVerified: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
+    image: {
+        type: String,
+    },
+    imageName: {
+        type: String,
+    },
+    isCompleted: {
+        type: Boolean,
+    },
 }, { timestamps: true });
-schema.virtual('age').get(function () {
+schema.virtual("age").get(function () {
     const today = new Date();
     const dob = this.personalInfo?.dateofBirth;
     let age = today.getFullYear() - dob.getFullYear();
-    if (today.getMonth() > dob.getMonth() || (today.getMonth() === dob?.getMonth() && today.getDate() < dob?.getDate())) {
+    if (today.getMonth() > dob.getMonth() ||
+        (today.getMonth() === dob?.getMonth() && today.getDate() < dob?.getDate())) {
         age--;
     }
     return age;

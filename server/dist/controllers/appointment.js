@@ -4,23 +4,24 @@ import ErrorHanlder from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/tryCatch.js";
 //*------------------------------------------------  new appointment----------------------------------------------
 export const newAppointment = TryCatch(async (req, res, next) => {
-    const { physicianName, status, time, user, date, discriptions } = req.body;
+    const { physicianName, additionalInfo, time, user, date, reason } = req.body;
     if (!physicianName || !time || !user)
         return next(new ErrorHanlder("All Fields are mandotory", 404));
     const newAppoint = await Appointment.create({
         physicianName,
-        status,
         user,
         time,
         date,
-        discriptions
+        reason,
+        additionalInfo
     });
     const userfor = await User.findById(user);
     userfor?.appointments.push(String(newAppoint._id));
     userfor?.save();
     res.status(201).json({
         success: true,
-        message: "You Make a new Appointment"
+        message: "You Make a new Appointment",
+        appointment: newAppoint
     });
 });
 //*--------------------------------------------- get All Appointments---------------------------------------------------------

@@ -1,13 +1,15 @@
 import {
-  CalendarTodayOutlined,
   CallOutlined,
+  Checklist,
   MailOutline,
   PersonOutline,
 } from "@mui/icons-material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -23,21 +25,141 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import dayjs, { Dayjs } from "dayjs";
+import { ChangeEvent, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import FileUploader from "../Components/FileUploader";
+import Loader from "../Components/Loader";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
-import { privacyContents } from "../utils/constants";
+import { formatedDate, privacyContents } from "../utils/constants";
+import { UserReducerInitialState, UserRegistrationResMsg } from "../vite-env";
+import { useUpdateUserMutation } from "../redux/apis/userApi";
+import toast from "react-hot-toast";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { userExist } from "../redux/reducers/user";
 
 const PatientsForm = () => {
   const navigate = useNavigate();
-  const hanldeSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { loading, user } = useSelector(
+    (state: { userReducer: UserReducerInitialState }) => state.userReducer
+  );
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const [checkedList, setCheckedList] = useState<boolean[]>([true, true, true]);
+
+  const [userDetails, setUserDetails] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    phoneNumber: user?.phoneNumber || "",
+  });
+
+  const [personalInfo, setPersonalInfo] = useState({
+    address: "",
+    dateofBirth: "",
+    occupation: "",
+    emergencyContName: "",
+    emergencyContNumber: "",
+    gender: "",
+  });
+
+  const [medicalInfo, setMedicalInfo] = useState({
+    allergies: "" || [""],
+    currentMedications: "",
+    familyMedicalHistory: "",
+    insurancePolicyNumber: "",
+    insuranceProvider: "",
+    primaryCarePhy: "",
+    userPastMedicalHistory: "",
+  });
+
+  const [identificationInfo, setIdentificationInfo] = useState({
+    identificationNumber: "",
+    identificationType: "",
+  });
+
+  const [file, setFile] = useState<File | undefined>();
+
+  const dispatch = useDispatch();
+
+  const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs(formatedDate));
+
+  //*------------------- HANDLERS-----------------
+  //*1. FOR SUBMITTING--------\
+  const hanldeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate("/appointment");
+    try {
+      const formdata = new FormData();
+      formdata.append("email", String(user?.email));
+      formdata.append("name", String(user?.name));
+      formdata.append("phoneNumber", String(user?.phoneNumber));
+      formdata.append("personalInfo", JSON.stringify(personalInfo));
+      formdata.append("medicalInfo", JSON.stringify(medicalInfo));
+      formdata.append("identification", JSON.stringify(identificationInfo));
+      formdata.append("image", file as Blob);
+      const response = await updateUser({ formdata }).unwrap();
+      if (response.success) {
+        toast.success(response.message);
+        dispatch(userExist(response.user!));
+        navigate("/appointment");
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.log("error:", error);
+      const err = error as FetchBaseQueryError;
+      const dataMes = err.data as UserRegistrationResMsg;
+      toast.error(dataMes.message);
+     if(dataMes.message.includes('session')){
+      navigate('/')
+     }
+
+
+    }
+  };
+
+  //* .2-------------------------- USER INFORMATION
+
+  const hanldePersonalInfo = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setPersonalInfo((pre) => ({ ...pre, [name]: value }));
+  };
+
+  //* 3.-------------------------- Medical Information
+
+  const hanldeMedicalInfo = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    if (name == "allergies" && value != "") {
+      const newAllergies = value.split(",");
+      setMedicalInfo((pre) => ({ ...pre, allergies: newAllergies }));
+    }
+
+    setMedicalInfo((pre) => ({ ...pre, [name]: value }));
+  };
+
+  //*4.--------------------------- Terms and Privacy Checklist
+
+  const handlecheckbox = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    const newList = [...checkedList];
+    newList[index] = e.target.checked;
+    setCheckedList(newList);
   };
 
   const theme = useTheme();
+
+  if (loading) return <Loader></Loader>;
+
   return (
     <Stack
       sx={{
@@ -102,6 +224,8 @@ const PatientsForm = () => {
                   }}
                   fullWidth
                   placeholder="ex:Adam"
+                  name="name"
+                  value={userDetails.name}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -144,6 +268,8 @@ const PatientsForm = () => {
                     borderRadius: "8px",
                   }}
                   fullWidth
+                  name="email"
+                  value={userDetails.email}
                   placeholder="ex:adam123@gmail.com"
                   slotProps={{
                     input: {
@@ -188,6 +314,8 @@ const PatientsForm = () => {
                   }}
                   fullWidth
                   placeholder="ex:9999222255"
+                  name="phoneNumber"
+                  value={userDetails.phoneNumber}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -223,37 +351,38 @@ const PatientsForm = () => {
                 >
                   Date of Birth
                 </Typography>
-                <TextField
-                  size="small"
-                  type="date"
-                  sx={{
-                    border: "1px solid",
-                    borderRadius: "8px",
-                  }}
-                  fullWidth
-                  placeholder="Select Your Birth Date"
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            edge="start"
-                          >
-                            {/* ----------------- Calender icon---------------- */}
-                            <CalendarTodayOutlined
-                              sx={{
-                                color: "#CDCECF",
-                                marginInline: "0.23rem",
-                                background: "none",
-                              }}
-                            />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    sx={{
+                      border: "1px solid",
+                      borderRadius: "8px",
+                    }}
+                    value={dateValue}
+                    name="dateofBirth"
+                    onChange={(newDate) =>
+                      setPersonalInfo({
+                        ...personalInfo,
+                        dateofBirth: String(newDate),
+                      })
+                    }
+                    defaultValue={dayjs(formatedDate)}
+                    slotProps={{
+                      openPickerButton: { color: "secondary" },
+                      textField: {
+                        name: "dateofBirth",
+                        size: "small",
+                      },
+                      popper: {
+                        sx: {
+                          "& .MuiPaper-root": {
+                            backgroundColor: theme.palette.primary.main,
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
               </Stack>
             </Grid>
             {/* ------------------------- Gender------------------------------ */}
@@ -272,6 +401,9 @@ const PatientsForm = () => {
 
                   <RadioGroup
                     row
+                    onChange={(e) => hanldePersonalInfo(e)}
+                    name="gender"
+                    value={personalInfo.gender}
                     sx={{
                       display: "flex",
                       alignItems: "center",
@@ -283,7 +415,6 @@ const PatientsForm = () => {
                       sx={{
                         border: "1px solid",
                         borderRadius: "8px",
-
                         paddingLeft: "0.8rem",
                       }}
                     >
@@ -340,6 +471,9 @@ const PatientsForm = () => {
                   Address
                 </Typography>
                 <TextField
+                  onChange={hanldePersonalInfo}
+                  value={personalInfo.address}
+                  name="address"
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -362,6 +496,9 @@ const PatientsForm = () => {
                   Occupation
                 </Typography>
                 <TextField
+                  value={personalInfo.occupation}
+                  onChange={hanldePersonalInfo}
+                  name="occupation"
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -388,6 +525,9 @@ const PatientsForm = () => {
                     border: "1px solid",
                     borderRadius: "8px",
                   }}
+                  value={personalInfo.emergencyContName}
+                  name="emergencyContName"
+                  onChange={hanldePersonalInfo}
                   fullWidth
                   placeholder="Guardian's Name"
                 />
@@ -402,7 +542,7 @@ const PatientsForm = () => {
                     color: theme.palette.text.secondary,
                   }}
                 >
-                  Phone Number
+                  Emergency Contact Number
                 </Typography>
                 <TextField
                   size="small"
@@ -411,6 +551,9 @@ const PatientsForm = () => {
                     borderRadius: "8px",
                   }}
                   fullWidth
+                  value={personalInfo.emergencyContNumber}
+                  name="emergencyContNumber"
+                  onChange={hanldePersonalInfo}
                   placeholder="Enter Your Phone Number"
                   slotProps={{
                     input: {
@@ -465,22 +608,102 @@ const PatientsForm = () => {
                 <Select
                   size="small"
                   fullWidth
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: theme.palette.background.default, // Change dropdown list background color
+                        border: "1px solid #bdbdbd", // Optional: Add border to the dropdown
+                        "& .MuiMenuItem-root": {},
+                      },
+                    },
+                  }}
                   sx={{
                     border: "1px solid",
-                    color: "white",
-                    backgroundColor: theme.palette.background.default,
+                    "& .MuiSelect-icon": {
+                      color: "white",
+
+                      // Dropdown arrow color
+                    },
                   }}
+                  displayEmpty
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  //   value={}
-                  label="Select Physician"
-                  //   onChange={}
+                  value={medicalInfo.primaryCarePhy}
+                  onChange={(e) =>
+                    setMedicalInfo({
+                      ...medicalInfo,
+                      primaryCarePhy: e.target.value,
+                    })
+                  }
                 >
-                  <MenuItem value={""}>Select Physician</MenuItem>
-                  <MenuItem value={10}>Dr. Naushad Khan</MenuItem>
-                  <MenuItem value={20}>Dr. Atifa Khan</MenuItem>
-                  <MenuItem value={30}>Dr. Faizan Khan</MenuItem>
-                  <MenuItem value={30}>Dr. Danish Khan</MenuItem>
+                  <MenuItem value="">
+                    <em>Select Physician</em> {/* Placeholder */}
+                  </MenuItem>
+                  <MenuItem value={"Dr. Naushad Khan"}>
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      sx={{ width: "100%" }}
+                    >
+                      <Typography> Dr. Naushad Khan</Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ marginLeft: "auto" }}
+                      >
+                        Gastroenterologist
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value={"Dr. Atifa Khan"}>
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      sx={{ width: "100%" }}
+                    >
+                      <Typography>Dr. Atifa Khan</Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ marginLeft: "auto" }}
+                      >
+                        Cardiologist
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value={"Dr. Faizan Khan"}>
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      sx={{ width: "100%" }}
+                    >
+                      <Typography>Dr. Faizan Khan</Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ marginLeft: "auto" }}
+                      >
+                        General practitioner
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+
+                  <MenuItem value={"Dr. Danish Khan"}>
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      sx={{ width: "100%" }}
+                    >
+                      <Typography>Dr. Danish Khan</Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ marginLeft: "auto" }}
+                      >
+                        Neurologist
+                      </Typography>
+                    </Box>
+                  </MenuItem>
                 </Select>
               </Stack>
             </Grid>
@@ -496,6 +719,9 @@ const PatientsForm = () => {
                   Insurance Provider
                 </Typography>
                 <TextField
+                  value={medicalInfo.insuranceProvider}
+                  name="insuranceProvider"
+                  onChange={hanldeMedicalInfo}
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -518,6 +744,9 @@ const PatientsForm = () => {
                   Insurance Policy Number
                 </Typography>
                 <TextField
+                  value={medicalInfo.insurancePolicyNumber}
+                  name="insurancePolicyNumber"
+                  onChange={hanldeMedicalInfo}
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -544,6 +773,9 @@ const PatientsForm = () => {
                     border: "1px solid",
                     borderRadius: "8px",
                   }}
+                  value={medicalInfo.allergies}
+                  name="allergies"
+                  onChange={hanldeMedicalInfo}
                   multiline
                   rows={3}
                   fullWidth
@@ -563,6 +795,9 @@ const PatientsForm = () => {
                   Current Medications
                 </Typography>
                 <TextField
+                  value={medicalInfo.currentMedications}
+                  name="currentMedications"
+                  onChange={hanldeMedicalInfo}
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -587,6 +822,9 @@ const PatientsForm = () => {
                   Family Medical history (if relevant)
                 </Typography>
                 <TextField
+                  value={medicalInfo.familyMedicalHistory}
+                  name="familyMedicalHistory"
+                  onChange={hanldeMedicalInfo}
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -611,6 +849,9 @@ const PatientsForm = () => {
                   Past medical history
                 </Typography>
                 <TextField
+                  value={medicalInfo.userPastMedicalHistory}
+                  name="userPastMedicalHistory"
+                  onChange={hanldeMedicalInfo}
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -619,7 +860,7 @@ const PatientsForm = () => {
                   multiline
                   rows={3}
                   fullWidth
-                  placeholder="Software Engineer"
+                  placeholder="cough and headache"
                 />
               </Stack>
             </Grid>
@@ -647,25 +888,46 @@ const PatientsForm = () => {
                 >
                   Identification Type
                 </Typography>
-                {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
+
                 <Select
                   size="small"
                   fullWidth
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: theme.palette.background.default, // Change dropdown list background color
+                        border: "1px solid #bdbdbd", // Optional: Add border to the dropdown
+                      },
+                    },
+                  }}
                   sx={{
                     border: "1px solid",
-                    color: "white",
-                    backgroundColor: theme.palette.background.default,
+                    "& .MuiOutlinedInput-notchedOutline": {},
+                    "& .MuiSelect-icon": {
+                      color: "white", // Dropdown arrow color
+                    },
                   }}
+                  displayEmpty
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  //   value={}
+                  value={identificationInfo.identificationType}
                   label="Select Physician"
-                  //   onChange={}
+                  onChange={(e) =>
+                    setIdentificationInfo({
+                      ...identificationInfo,
+                      identificationType: e.target.value,
+                    })
+                  }
                 >
-                  <MenuItem value={""}>Birth Certificate</MenuItem>
-                  <MenuItem value={10}>Aadhar Card</MenuItem>
-                  <MenuItem value={20}>Passport</MenuItem>
-                  <MenuItem value={30}>Driving Licence</MenuItem>
+                  <MenuItem value="">
+                    <em>Select Document Type</em> {/* Placeholder */}
+                  </MenuItem>
+                  <MenuItem value={"Birth Certificate"}>
+                    Birth Certificate
+                  </MenuItem>
+                  <MenuItem value={"Aadhar"}>Aadhar Card</MenuItem>
+                  <MenuItem value={"Passport"}>Passport</MenuItem>
+                  <MenuItem value={"Driving Lisence"}>Driving Lisence</MenuItem>
                 </Select>
               </Stack>
             </Grid>
@@ -679,6 +941,13 @@ const PatientsForm = () => {
                   Identification Number
                 </Typography>
                 <TextField
+                  value={identificationInfo.identificationNumber}
+                  onChange={(e) =>
+                    setIdentificationInfo({
+                      ...identificationInfo,
+                      identificationNumber: e.target.value,
+                    })
+                  }
                   size="small"
                   sx={{
                     border: "1px solid",
@@ -689,7 +958,14 @@ const PatientsForm = () => {
                 />
               </Stack>
             </Grid>
-            <Grid item md={12}>
+            {/* -------------------------  documents uploads----------------------------- */}
+            <Grid
+              item
+              md={12}
+              sx={{
+                cursor: "pointer",
+              }}
+            >
               <Stack gap={1}>
                 <Typography
                   sx={{
@@ -698,7 +974,7 @@ const PatientsForm = () => {
                 >
                   Scanned Copy of Identification Document
                 </Typography>
-                <FileUploader />
+                <FileUploader file={file} setFile={setFile} />
               </Stack>
             </Grid>
             {/* ------------------------- Consent and provicy--------------------------- */}
@@ -721,7 +997,11 @@ const PatientsForm = () => {
                   justifyContent={"start"}
                   alignItems={"center"}
                 >
-                  <Checkbox defaultChecked />
+                  <Checkbox
+                    defaultChecked
+                    value={checkedList[idx]}
+                    onChange={(e) => handlecheckbox(e, idx)}
+                  />
                   <Typography
                     sx={{
                       color: theme.palette.text.secondary,
@@ -734,16 +1014,34 @@ const PatientsForm = () => {
               ))}
 
               <Button
+                disabled={!checkedList[0] || !checkedList[1] || !checkedList[2]}
                 variant="contained"
                 type="submit"
                 sx={{
                   my: 5,
                   textTransform: "none",
                   color: "#ffff",
+                  "&.MuiButtonBase-root:disabled": {
+                    backgroundColor: theme.palette.primary.main,
+                    opacity: "40%",    
+                    color: "darkgray", 
+                    cursor: "not-allowed",
+                    pointerEvents: "auto",
+                   
+                  },
                 }}
                 fullWidth
               >
-                Submit and continue
+                {isLoading ? (
+                  <CircularProgress
+                    size={27}
+                    sx={{
+                      color: "#fff",
+                    }}
+                  />
+                ) : (
+                  "Submit and Continue"
+                )}
               </Button>
             </Grid>
           </Grid>
@@ -752,7 +1050,7 @@ const PatientsForm = () => {
 
       {/* ----------------------------------image------------------------------- */}
 
-      <LeftImage image={'/patients_page_image.png'} />
+      <LeftImage image={"/patients_page_image.png"} />
     </Stack>
   );
 };

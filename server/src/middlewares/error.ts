@@ -7,6 +7,8 @@ export const ErrorMiddleware = async (err:ErrorHanlder,req:Request,res:Response,
     err.statusCode = err.statusCode || 500
 
 
+    
+
 return res.status(err.statusCode).json({
     message:err.message,
     success:false

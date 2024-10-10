@@ -7,7 +7,7 @@ config();
 export const authenticated = TryCatch(async (req, res, next) => {
     const token = req.cookies.authToken;
     if (!token)
-        return next(new ErrorHanlder("Token not found", 404));
+        return next(new ErrorHanlder("your session is expired,please re-login first", 404));
     const decode = jwt.verify(token, process.env.SECRET_TOKEN_KEY);
     req.user = decode;
     next();

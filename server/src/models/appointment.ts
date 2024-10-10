@@ -15,8 +15,12 @@ const schema = new mongoose.Schema(
       type: String,
     },
 
-    discriptions: {
+    reason: {
       type: String,
+    },
+    
+    additionalInfo :{
+    type:String
     },
 
     date: {

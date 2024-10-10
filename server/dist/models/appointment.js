@@ -10,8 +10,11 @@ const schema = new mongoose.Schema({
     time: {
         type: String,
     },
-    discriptions: {
+    reason: {
         type: String,
+    },
+    additionalInfo: {
+        type: String
     },
     date: {
         type: Date,

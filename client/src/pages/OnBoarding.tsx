@@ -2,6 +2,7 @@ import { CallOutlined, MailOutline, PersonOutline } from "@mui/icons-material";
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   InputAdornment,
   Stack,
@@ -10,19 +11,23 @@ import {
   useTheme,
 } from "@mui/material";
 import { FormEvent, useState } from "react";
-import DialogComponent from "../Components/Dialog";
-import Heading from "../Components/shared/Heading";
-import { Link } from "react-router-dom";
-import { useUserRegisterMutation } from "../redux/apis/userApi";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { UserRegistrationResMsg } from "../vite-env";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import DialogComponent from "../Components/Dialog";
+import PhoneDialoge from "../Components/PhoneDialog";
+import Heading from "../Components/shared/Heading";
+import { useUserRegisterMutation } from "../redux/apis/userApi";
 import { userExist } from "../redux/reducers/user";
+import DialogPasskey from "./admin/PasskeyDialogue";
 
 const OnBoarding = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [phoneOpen, setPhoneOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>();
+  const [openAdmin,setOpenAdmin] = useState<boolean>(false)
+
   const [userDetails, setUserDetails] = useState({
     name: "",
     email: "",
@@ -30,40 +35,48 @@ const OnBoarding = () => {
   });
 
   const [userRegister] = useUserRegisterMutation();
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   //?----------------------- handlers--------------------------------
   //* ---------- FOR SUBMITTING FORM
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-        setOpen(true); // opne the OTP dialogue
     try {
+      setLoading(true);
       const res = await userRegister(userDetails).unwrap();
-      if (res.success) {
-        toast.success(res.message.toString());
-        console.log('res.message:', res.message)
-        dispatch(userExist(res.user!))
-        setOpen(true); // opne the OTP dialogue
-      }
-
+      toast.success(res.message.toString());
+      console.log("res.message:", res.message);
+      dispatch(userExist(res.user!));
+      setOpen(true); // opne the OTP dialogue
+      setLoading(false);
     } catch (error) {
       console.log("error:", error);
-      const err = error as FetchBaseQueryError;
-      const data = err.data as UserRegistrationResMsg;
-      toast.error(data.message);
+      toast.error("user already register");
+      setLoading(false);
     }
   };
-  //*-------------- FOR ONCHANGING
+  //*-------------- FOR ONCHANGING----------------------
 
   const hanldeChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const name = e.target.name;
     const value = e.target.value;
-
     setUserDetails({ ...userDetails, [name]: value });
   };
+
+  //*---------------------------FOR LOGIN------------------
+  const hanldeLogin = () => {
+    setPhoneOpen(true);
+  };
+
+ //*-----------------FOR ADMIN -----------------
+ const hanldeAdminDialogue = ()=>{
+  setOpenAdmin(true)
+ }
+
+
+
 
   return (
     <Stack
@@ -134,7 +147,6 @@ const OnBoarding = () => {
                     value={userDetails.name}
                     required={true}
                     onChange={hanldeChange}
-                  
                     slotProps={{
                       input: {
                         startAdornment: (
@@ -206,7 +218,6 @@ const OnBoarding = () => {
                     required={true}
                     value={userDetails.phoneNumber}
                     onChange={hanldeChange}
-                
                     slotProps={{
                       input: {
                         startAdornment: (
@@ -214,9 +225,8 @@ const OnBoarding = () => {
                             <IconButton
                               aria-label="toggle password visibility"
                               edge="start"
-                             
                             >
-                              {/* ----------------- user icon---------------- */}
+                              {/* ----------------- phone icon---------------- */}
                               <CallOutlined
                                 sx={{
                                   color: "#CDCECF",
@@ -243,7 +253,32 @@ const OnBoarding = () => {
                   variant="contained"
                   fullWidth
                 >
-                  Get Started
+                  {loading ? (
+                    <CircularProgress
+                      size={27}
+                      sx={{
+                        color: "#fff",
+                      }}
+                    />
+                  ) : (
+                    "Get Started"
+                  )}
+                </Button>
+
+                <Button
+                  onClick={hanldeLogin}
+                  sx={{
+                    color: "white",
+                    textTransform: "none",
+                  }}
+                  variant="outlined"
+                  fullWidth
+                >
+                  Already Register  <span style={{
+                    color:theme.palette.primary.main,
+                    fontWeight:'600',
+                    marginLeft:"1rem"
+                  }}>Try Login </span> 
                 </Button>
               </Stack>
             </form>
@@ -254,7 +289,7 @@ const OnBoarding = () => {
         <Stack
           direction={"row"}
           sx={{
-            marginTop: { xs: "3.3rem", md: "6.6rem" },
+            marginTop: { xs: "3.3rem", md: "3.6rem" },
           }}
         >
           <Typography
@@ -267,7 +302,9 @@ const OnBoarding = () => {
           >
             @careplus copyright
           </Typography>
-          <Link to={"/admin/dashboard"}>
+          <Box  onClick={hanldeAdminDialogue} sx={{
+            cursor:'pointer'
+          }}>
             <Typography
               variant="body2"
               fontSize={"0.7rem"}
@@ -277,11 +314,11 @@ const OnBoarding = () => {
             >
               Admin
             </Typography>
-          </Link>
+          </Box>
         </Stack>
       </Box>
 
-      {/* --------right side ------------- */}
+      {/* -------------------------------------right side --------------------------------- */}
       <Box
         sx={{
           display: { xs: "none", md: "block" },
@@ -298,7 +335,7 @@ const OnBoarding = () => {
           }}
         >
           <img
-            src={'/onboarding.png'}
+            src={"/onboarding.png"}
             alt="onboarding_image"
             style={{
               width: "100%",
@@ -309,7 +346,27 @@ const OnBoarding = () => {
           />
         </Box>
       </Box>
-      <DialogComponent open={open} handelOpen={setOpen} />
+      <DialogComponent
+        open={open}
+        handelOpen={setOpen}
+        phoneNumber={userDetails.phoneNumber}
+        title = {"Verify OTP"}
+        subtitle={ "Please enter the OTP sent to your registered mobile number."}
+        routeName={'/patient'}
+      />
+      <DialogPasskey
+        open={openAdmin}
+        handelOpen={setOpenAdmin}
+        title = {"Admin Access"}
+        routeName={'admin/dashboard'}
+        subtitle={ "Please enter your Passkey ."}
+      />
+      <PhoneDialoge
+        open={phoneOpen}
+        handelOpen={setPhoneOpen}
+        hanldeOpenOTPDialog={setOpen}
+        openOTPDialog={open}
+      />
     </Stack>
   );
 };

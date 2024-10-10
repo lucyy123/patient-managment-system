@@ -1,12 +1,15 @@
 import { config } from 'dotenv';
 import { NextFunction, Request, Response } from "express";
+import fs, { PathLike } from 'fs';
 import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
+import { uploadOnCloudinary } from '../middlewares/cloudinary.js';
 import { User } from '../models/user.js';
 import { AuthenticatedRequest, OTPverificationReqBody, UserRegisterBody } from "../types/types.js";
 import ErrorHanlder from "../utils/errorHandler.js";
 import { generateOTP, sendOtp } from "../utils/OTP.js";
 import { TryCatch } from "../utils/tryCatch.js";
 config()
+
 
 
 
@@ -22,9 +25,8 @@ export const userRegister = TryCatch(async (req: Request<{}, {}, UserRegisterBod
     if (existingUser) return next(new ErrorHanlder("User already exist", 404));
 
 
-    //*------------- generate OTP
+    const otp = generateOTP()   //*------------- generate OTP
 
-    const otp = generateOTP()
     const otpExpires = Date.now() + 10 * 60 * 1000;   //*---------------- expires in 10 minuts--------------
 
 
@@ -64,7 +66,8 @@ export const verifOTP = TryCatch(async (req: Request<{}, {}, OTPverificationReqB
     const user = await User.findOne({ phoneNumber })
     if (!user) return next(new ErrorHanlder("User not found", 404));
 
-    console.log('Number(user?.otpExpires) < Date.now():', Number(user?.otpExpires), Date.now())
+
+
     if (user?.otp !== otp || Number(user?.otpExpires) < Date.now()) {
         return next(new ErrorHanlder("Invalid or Expired OTP", 404))
     }
@@ -92,7 +95,8 @@ export const verifOTP = TryCatch(async (req: Request<{}, {}, OTPverificationReqB
         path: '/'
     }).status(200).json({
         success: true,
-        message: 'User Verified Successfully'
+        message: 'User Verified Successfully',
+        user
     })
 
 
@@ -101,13 +105,20 @@ export const verifOTP = TryCatch(async (req: Request<{}, {}, OTPverificationReqB
 
 //*---------------------------------------  user update --------------------------------------------------
 
-export const updateUser = TryCatch(async (req:AuthenticatedRequest, res, next) => {
-    const UserId  = (req.user as JwtPayload).userId;
+export const updateUser = TryCatch(async (req: AuthenticatedRequest, res, next) => {
+    const UserId = (req.user as JwtPayload).userId;
+    //----------------file or image--------------
+
+    const image = req.file
 
     if (!UserId) return next(new ErrorHanlder('User Id not found', 404))
     const { email, name, phoneNumber, identification, medicalInfo, personalInfo, appointments } = req.body
 
-    const newAllergies = medicalInfo.allergies.split(',')
+    //---------------- upload the image if  already not
+    const updatedImage = await uploadOnCloudinary(image?.path)
+
+    const deletedOldImage = fs.unlinkSync(image?.path as PathLike)
+ 
 
 
     const newUser = {
@@ -115,11 +126,12 @@ export const updateUser = TryCatch(async (req:AuthenticatedRequest, res, next) =
         name,
         phoneNumber,
         personalInfo,
-        medicalInfo: {
-            allergies: newAllergies
-        },
+        medicalInfo,
         identification,
-        appointments
+        appointments,
+        image: updatedImage?.url || '',
+        imageName: updatedImage?.original_filename || '',
+        isCompleted:true
     }
 
     const updatedUser = await User.findByIdAndUpdate(UserId, {
@@ -132,15 +144,16 @@ export const updateUser = TryCatch(async (req:AuthenticatedRequest, res, next) =
 
     res.status(200).json({
         success: true,
-        message: 'Information Updated Successfully'
+        message: 'Information Updated Successfully',
+        user: updatedUser
     })
 })
 
 
 //*--------------------------------------- get user ------------------------------------------------------
 
-export const getUser = TryCatch(async (req:AuthenticatedRequest, res, next) => {
-    const UserId  = (req.user as JwtPayload).userId;
+export const getUser = TryCatch(async (req: AuthenticatedRequest, res, next) => {
+    const UserId = (req.user as JwtPayload).userId;
     // const id = String(UserId?.userId)
 
     if (!UserId) return next(new ErrorHanlder(
@@ -161,3 +174,76 @@ export const getUser = TryCatch(async (req:AuthenticatedRequest, res, next) => {
 
 
 
+//*--------------------------------------- login ---------------------------------------------------------
+
+
+export const loginUser = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    const { phoneNumber } = req.body;
+
+    if (!phoneNumber) {
+        return next(new ErrorHanlder('Phone number is required', 400));
+    }
+
+    const user = await User.findOne({ phoneNumber });
+    if (!user) {
+        return next(new ErrorHanlder('User not found', 404));
+    }
+
+    // If user is not verified, they need to verify through OTP
+    if (!user.isVerified) {
+      
+    // reset the already filled value
+        user.otp = undefined
+        user.otpExpires = undefined
+       
+        const otp = generateOTP()   //*------------- generate OTP
+
+        const otpExpires = Date.now() + 10 * 60 * 1000;   //*---------------- expires in 10 minuts--------------
+     
+        user.otp=otp
+        user.otpExpires = String(otpExpires)
+        await user.save();
+        return next(new ErrorHanlder('Enter the OTP for verification',404))
+    }
+
+    // If user is verified, generate a new token
+    const secret_key = process.env.SECRET_TOKEN_KEY as Secret;
+    const token = jwt.sign({ userId: user._id }, secret_key, {
+        expiresIn: '3h', // token expiration in 3 hours
+    });
+
+    // Store the token in a cookie
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 3 * 60 * 60 * 1000, // 3-hour expiration
+        path: '/',
+    });
+
+    res.status(200).json({
+        success: true,
+        redirect:false,
+        message: 'User logged in successfully',
+        user,
+    });
+});
+
+
+//*----------------------------------- user logout ++++++++++++++++++++++++
+
+
+export const logoutUser = TryCatch(async(req  ,res , next )=>{
+      res.clearCookie('authToken', {
+          sameSite: 'strict', 
+          httpOnly: true,         
+          secure: process.env.NODE_ENV === 'production', 
+    });
+    
+
+    return res.status(200).json({
+        success: true,
+        message: 'User logged out successfully',
+    });
+
+})
