@@ -55,3 +55,36 @@ export const logoutAdmin = TryCatch(async (req, res, next) => {
     });
 
 })
+
+
+//*------------------------------ get All Admins---------------------
+
+
+export const getAllAdmins = TryCatch(async (req, res, next) => {
+    const admins = await Admin.find().select('name speciality');
+    if (!admins) return next(new ErrorHanlder("No Doctors Are Registers", 404))
+    res.status(200).json({
+        success: true,
+        admins
+    })
+})
+
+//*--------------------------- All appointments ------------------------------
+
+export const allAppointments = TryCatch(async (req, res, next,) => {
+
+    const { id } = req.params
+
+    if (!id) return next(new ErrorHanlder("Invalid Id", 404))
+    const admin = await Admin.findById(id).populate('appointmentsOfUsers')
+    if (!admin) return next(new ErrorHanlder("No Appointment is scheduled", 404))
+    res.status(200).json({
+        success: true,
+        appointments: admin
+
+
+    })
+
+
+
+})

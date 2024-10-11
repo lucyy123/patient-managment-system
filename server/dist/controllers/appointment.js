@@ -1,27 +1,34 @@
+import { Admin } from "../models/admin.js";
 import { Appointment } from "../models/appointment.js";
 import { User } from '../models/user.js';
 import ErrorHanlder from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/tryCatch.js";
 //*------------------------------------------------  new appointment----------------------------------------------
 export const newAppointment = TryCatch(async (req, res, next) => {
-    const { physicianName, additionalInfo, time, user, date, reason } = req.body;
+    const { physicianName, additionalInfo, time, user, date, reason, docId } = req.body;
     if (!physicianName || !time || !user)
         return next(new ErrorHanlder("All Fields are mandotory", 404));
     const newAppoint = await Appointment.create({
         physicianName,
         user,
         time,
+        docId,
         date,
         reason,
         additionalInfo
     });
+    // users appointments
     const userfor = await User.findById(user);
     userfor?.appointments.push(String(newAppoint._id));
     userfor?.save();
+    // appointments of admin / doctor
+    const appointedDoctor = await Admin.findById(docId);
+    appointedDoctor?.appointmentsOfUsers.push(user);
+    appointedDoctor?.save();
     res.status(201).json({
         success: true,
         message: "You Make a new Appointment",
-        appointment: newAppoint
+        appointment: newAppoint,
     });
 });
 //*--------------------------------------------- get All Appointments---------------------------------------------------------

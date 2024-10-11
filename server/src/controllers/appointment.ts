@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Admin } from "../models/admin.js";
 import { Appointment } from "../models/appointment.js";
 import { User } from '../models/user.js';
 import { AppointmentBody } from "../types/types.js";
@@ -13,7 +14,7 @@ export const newAppointment = TryCatch(
         res: Response,
         next: NextFunction
     ) => {
-        const { physicianName, additionalInfo, time, user, date, reason } = req.body;
+        const { physicianName, additionalInfo, time, user, date, reason,docId } = req.body;
 
         if (!physicianName || !time || !user)
             return next(new ErrorHanlder("All Fields are mandotory", 404));
@@ -22,20 +23,27 @@ export const newAppointment = TryCatch(
             physicianName,
             user,
             time,
+            docId,
             date,
             reason,
             additionalInfo
         });
 
-
+       // users appointments
         const userfor = await User.findById(user)
         userfor?.appointments.push(String(newAppoint._id))
         userfor?.save()
 
+        // appointments of admin / doctor
+
+        const appointedDoctor = await Admin.findById(docId)
+        appointedDoctor?.appointmentsOfUsers.push(user as String)
+        appointedDoctor?.save()
+
         res.status(201).json({
             success: true,
             message: "You Make a new Appointment",
-            appointment:newAppoint
+            appointment:newAppoint,
         })
 
     });

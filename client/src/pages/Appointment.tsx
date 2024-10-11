@@ -14,15 +14,15 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs, { Dayjs } from "dayjs";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import Loader from "../Components/Loader";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
-import { formatedDate, getTime } from "../utils/constants";
-import { AppointResBodyType, UserReducerInitialState } from "../vite-env";
+import { formatedDate, getAllDoctorsList, getTime } from "../utils/constants";
+import { AdminItemType, AdminsType, AppointResBodyType, UserReducerInitialState } from "../vite-env";
 import { useNewAppointmentMutation } from "../redux/apis/appointment";
 import toast from "react-hot-toast";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -40,11 +40,17 @@ const Appointment = () => {
   );
   const dispatch = useDispatch();
   const [newAppointment] = useNewAppointmentMutation();
+  const [doclist, setDoclist] = useState<AdminsType | []>();
+  useEffect(() => {
+    getAllDoctorsList().then((data) => setDoclist(data));
+  }, []);
+
 
   const [appointDetails, setAppointDetails] = useState({
     status: "pending",
     user: user?._id,
     physicianName: "",
+    docId:'',
     time: String(dayjs(value).format("HH:mm")),
     date:formatedDate,
     reason: "",
@@ -55,7 +61,6 @@ const Appointment = () => {
   //* 1. FOR SUBMIT
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("appintment ", appointDetails);
     setIsLoading(true)
     try {
       const res = await newAppointment(appointDetails).unwrap();
@@ -151,82 +156,48 @@ const Appointment = () => {
                     displayEmpty
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={appointDetails.physicianName}
-                    onChange={(e) =>
-                      setAppointDetails({
+                    value={appointDetails.physicianName && appointDetails.docId ? `${appointDetails.physicianName}-${appointDetails.docId}` : ""}
+                    onChange={(e) =>{
+                      const selectedValue = e.target.value
+                           console.log('selectedValue:', selectedValue)
+                           const value = e.target.value.split("-")
+                          const name = value[0]
+                          console.log('name:', name)
+                          const id = value[1]
+                          console.log('id:', id)
+                  return    setAppointDetails({
                         ...appointDetails,
-                        physicianName: e.target.value,
+                        physicianName: name,
+                        docId:id
                       })
+                    }
+
                     }
                   >
                     <MenuItem value="">
                       <em>Select Physician</em> {/* Placeholder */}
                     </MenuItem>
-                    <MenuItem value={"Dr. Naushad Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography> Dr. Naushad Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
-                      >
-                        Gastroenterologist
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value={"Dr. Atifa Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography>Dr. Atifa Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
-                      >
-                        Cardiologist
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value={"Dr. Faizan Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography>Dr. Faizan Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
-                      >
-                        General practitioner
-                      </Typography>
-                    </Box>
-                  </MenuItem>
 
-                  <MenuItem value={"Dr. Danish Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography>Dr. Danish Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
+
+                    {doclist?.map((ele: AdminItemType) => (
+                    <MenuItem   value={`${ele.name}-${ele._id}`} key={ele._id} >
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        sx={{ width: "100%" }}
                       >
-                        Neurologist
-                      </Typography>
-                    </Box>
-                  </MenuItem>
+                        <Typography>{ele.name}</Typography>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{ marginLeft: "auto" }}
+                        >
+                          {ele.speciality}
+                        </Typography>
+                      </Box>
+                    </MenuItem>
+                  ))}
+                  
                   </Select>
                 </Stack>
               </Grid>

@@ -7,19 +7,23 @@ import {
   useTheme,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppointmentCard from "../../Components/AppointmentCard";
 import Heading from "../../Components/shared/Heading";
 import SubHeading from "../../Components/shared/SubHeading";
 import AdminTable from "../../Components/Table";
-import { TableRowsType } from "../../vite-env";
+import { AdminInitStateType, TableRowsType } from "../../vite-env";
 import AppointmentDialogue from "./AppointmentDialogue";
 import CancelDialogue from "./CancelDailog";
+import { useSelector } from "react-redux";
+import Loader from "../../Components/Loader";
 
 const Dashboard = () => {
-    const [open,setOpen] = useState<boolean>(false)
-    const [cancelOpen,setCancelOpen] = useState<boolean>(false)
-
+  const [open, setOpen] = useState<boolean>(false);
+  const [cancelOpen, setCancelOpen] = useState<boolean>(false);
+  const { admin, loading } = useSelector(
+    (state: { adminReducer: AdminInitStateType }) => state.adminReducer
+  );
 
   const theme = useTheme();
 
@@ -60,8 +64,8 @@ const Dashboard = () => {
               color: theme.palette.primary.main,
               textTransform: "none",
             }}
-         onClick={()=>setOpen(true)}
-         >
+            onClick={() => setOpen(true)}
+          >
             Schedule
           </Button>
 
@@ -71,8 +75,7 @@ const Dashboard = () => {
               color: "#ffff",
               textTransform: "none",
             }}
-         onClick={()=>setCancelOpen(true)}
-
+            onClick={() => setCancelOpen(true)}
           >
             Cancel
           </Button>
@@ -107,6 +110,8 @@ const Dashboard = () => {
     },
   ];
 
+  if (loading) return <Loader></Loader>;
+
   return (
     <Box>
       {/* --------- Header  { heading + admin info } ------------------*/}
@@ -122,15 +127,16 @@ const Dashboard = () => {
 
         <Stack marginLeft={"auto"} direction={"row"} gap={1}>
           <Avatar
-            src={'/doctor.avif'}
+            src={"/doctor.avif"}
             alt="admin_avatar"
             sx={{
               height: "2rem",
               width: "2rem",
             }}
           />
+          {/* ----------------------name-------------------------- */}
           <Typography variant="subtitle2" fontSize={"1.2rem"}>
-            Admin
+            {admin?.name}
           </Typography>
         </Stack>
       </Stack>
@@ -141,7 +147,7 @@ const Dashboard = () => {
         {/* --------------------+ sub heading ----------------------- */}
 
         <SubHeading
-          title="Welcome, Admin"
+          title={`Welcome, ${admin?.name}`}
           subtitile="Start day with managing new appointments"
           margintop={1}
         />
@@ -150,12 +156,14 @@ const Dashboard = () => {
           <AppointmentCard />
         </Box>
         {/* ------------------------------------- table------------------------------------ */}
-       
-       <Box mt={5}>
-        <AdminTable columns={columns} rows={rows} />
-       </Box>
-       <AppointmentDialogue  handelOpen={setOpen} open={open}/>
-       <CancelDialogue handelOpen = {setCancelOpen} open ={cancelOpen} />
+
+        <Box mt={5}>
+          <AdminTable columns={columns} rows={rows} />
+        </Box>
+        {/* ----------------------------------Appointment Dialogue------------------------- */}
+        <AppointmentDialogue handelOpen={setOpen} open={open} />
+        {/* ----------------------------------Cancel Dialogue------------------------- */}
+        <CancelDialogue handelOpen={setCancelOpen} open={cancelOpen} />
       </Box>
     </Box>
   );

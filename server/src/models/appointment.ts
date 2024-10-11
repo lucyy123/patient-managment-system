@@ -7,6 +7,11 @@ const schema = new mongoose.Schema(
       ref: "User",
     },
 
+    docId:{
+      type: mongoose.Types.ObjectId,
+      ref: "admin",
+    },
+
     physicianName: {
       type: String,
     },

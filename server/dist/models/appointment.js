@@ -4,6 +4,10 @@ const schema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "User",
     },
+    docId: {
+        type: mongoose.Types.ObjectId,
+        ref: "admin",
+    },
     physicianName: {
         type: String,
     },

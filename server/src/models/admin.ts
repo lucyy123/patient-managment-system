@@ -20,10 +20,10 @@ const schema = new mongoose.Schema(
       type: String,
     },
 
-    appointmens: [
+    appointmentsOfUsers: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "Appointment",
+        ref: "User",
       },
     ],
     discription: {

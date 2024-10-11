@@ -1,9 +1,4 @@
-import {
-  CallOutlined,
-  Checklist,
-  MailOutline,
-  PersonOutline,
-} from "@mui/icons-material";
+import { CallOutlined, MailOutline, PersonOutline } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   Box,
@@ -28,7 +23,7 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import FileUploader from "../Components/FileUploader";
@@ -36,8 +31,17 @@ import Loader from "../Components/Loader";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
-import { formatedDate, privacyContents } from "../utils/constants";
-import { UserReducerInitialState, UserRegistrationResMsg } from "../vite-env";
+import {
+  formatedDate,
+  getAllDoctorsList,
+  privacyContents,
+} from "../utils/constants";
+import {
+  AdminItemType,
+  AdminsType,
+  UserReducerInitialState,
+  UserRegistrationResMsg,
+} from "../vite-env";
 import { useUpdateUserMutation } from "../redux/apis/userApi";
 import toast from "react-hot-toast";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -49,6 +53,7 @@ const PatientsForm = () => {
     (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
   const [updateUser, { isLoading }] = useUpdateUserMutation();
+
   const [checkedList, setCheckedList] = useState<boolean[]>([true, true, true]);
 
   const [userDetails, setUserDetails] = useState({
@@ -87,6 +92,11 @@ const PatientsForm = () => {
 
   const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs(formatedDate));
 
+  const [doclist, setDoclist] = useState<AdminsType | []>();
+  useEffect(() => {
+    getAllDoctorsList().then((data) => setDoclist(data));
+  }, []);
+
   //*------------------- HANDLERS-----------------
   //*1. FOR SUBMITTING--------\
   const hanldeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,11 +123,9 @@ const PatientsForm = () => {
       const err = error as FetchBaseQueryError;
       const dataMes = err.data as UserRegistrationResMsg;
       toast.error(dataMes.message);
-     if(dataMes.message.includes('session')){
-      navigate('/')
-     }
-
-
+      if (dataMes.message.includes("session")) {
+        navigate("/");
+      }
     }
   };
 
@@ -639,71 +647,24 @@ const PatientsForm = () => {
                   <MenuItem value="">
                     <em>Select Physician</em> {/* Placeholder */}
                   </MenuItem>
-                  <MenuItem value={"Dr. Naushad Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography> Dr. Naushad Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
+                  {doclist?.map((ele: AdminItemType) => (
+                    <MenuItem value={ele.name} key={ele._id}>
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        sx={{ width: "100%" }}
                       >
-                        Gastroenterologist
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value={"Dr. Atifa Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography>Dr. Atifa Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
-                      >
-                        Cardiologist
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value={"Dr. Faizan Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography>Dr. Faizan Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
-                      >
-                        General practitioner
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-
-                  <MenuItem value={"Dr. Danish Khan"}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      sx={{ width: "100%" }}
-                    >
-                      <Typography>Dr. Danish Khan</Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ marginLeft: "auto" }}
-                      >
-                        Neurologist
-                      </Typography>
-                    </Box>
-                  </MenuItem>
+                        <Typography> {ele.name}</Typography>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{ marginLeft: "auto" }}
+                        >
+                          {ele.speciality}
+                        </Typography>
+                      </Box>
+                    </MenuItem>
+                  ))}
                 </Select>
               </Stack>
             </Grid>
@@ -1023,11 +984,10 @@ const PatientsForm = () => {
                   color: "#ffff",
                   "&.MuiButtonBase-root:disabled": {
                     backgroundColor: theme.palette.primary.main,
-                    opacity: "40%",    
-                    color: "darkgray", 
+                    opacity: "40%",
+                    color: "darkgray",
                     cursor: "not-allowed",
                     pointerEvents: "auto",
-                   
                   },
                 }}
                 fullWidth

@@ -14,10 +14,10 @@ const schema = new mongoose.Schema({
     speciality: {
         type: String,
     },
-    appointmens: [
+    appointmentsOfUsers: [
         {
             type: mongoose.Types.ObjectId,
-            ref: "Appointment",
+            ref: "User",
         },
     ],
     discription: {

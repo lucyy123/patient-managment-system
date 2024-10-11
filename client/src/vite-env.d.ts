@@ -100,6 +100,7 @@ export type AppointReqBodyType = {
   status?: string;
   user: string | undefined;
   physicianName: string;
+  docId:string;
   time: string
   date: Date | undefined,
   reason: string
@@ -116,7 +117,8 @@ export type AppointmentType = {
   _id: string
   user: string
   physicianName: string
-  time: string
+  time: string;
+  docId:string;
   reason: string
   additionalInfo: string
   date: Date | undefined
@@ -160,4 +162,13 @@ export type AdminReqbodyType ={
 export type AdminInitStateType ={
 admin:AdminType | null
 loading:boolean
+}
+
+export type AdminsType ={
+  admins:AdminItemType[]
+}
+type AdminItemType = {
+  name:string;
+  speciality:string;
+  _id:string
 }
