@@ -1,6 +1,6 @@
-import { AdminReqbodyType } from './../../vite-env.d';
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { AdminResMes } from "../../vite-env";
+import { AdminReqbodyType } from './../../vite-env.d';
 
 const baseUrl = `${import.meta.env.VITE_SERVER_BASE_URL}/api/v1/admin`;
 
@@ -19,6 +19,10 @@ export const adminApi = createApi({
 
          logoutAdmin:builder.query({
             query:()=>'/logout'
+         }),
+
+         getAllAppointments : builder.query({
+            query:(id)=>`/get/all/appoint/${id}`
          })
 
 
@@ -27,4 +31,4 @@ export const adminApi = createApi({
 });
 
 
-export const {useVerifyAdminMutation,useLogoutAdminQuery}= adminApi
+export const {useVerifyAdminMutation,useLogoutAdminQuery,useGetAllAppointmentsQuery}= adminApi

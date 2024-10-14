@@ -23,7 +23,12 @@ export const newAppointment = TryCatch(async (req, res, next) => {
     userfor?.save();
     // appointments of admin / doctor
     const appointedDoctor = await Admin.findById(docId);
-    appointedDoctor?.appointmentsOfUsers.push(user);
+    appointedDoctor?.appointmentsOfUsers.push({
+        patientName: userfor?.name,
+        patientEmail: userfor?.email,
+        patientPhone: userfor?.phoneNumber,
+        appointmentId: [newAppoint._id],
+    });
     appointedDoctor?.save();
     res.status(201).json({
         success: true,

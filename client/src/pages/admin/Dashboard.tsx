@@ -17,8 +17,12 @@ import AppointmentDialogue from "./AppointmentDialogue";
 import CancelDialogue from "./CancelDailog";
 import { useSelector } from "react-redux";
 import Loader from "../../Components/Loader";
+import useGetAllAppointments from "../../hooks/admin/useGetAllAppointments";
+import { useParams } from "react-router-dom";
 
 const Dashboard = () => {
+  const { docId } = useParams();
+  const listOfAppoints = useGetAllAppointments({ docId });
   const [open, setOpen] = useState<boolean>(false);
   const [cancelOpen, setCancelOpen] = useState<boolean>(false);
   const { admin, loading } = useSelector(
@@ -34,11 +38,18 @@ const Dashboard = () => {
       flex: 1,
     },
     {
+      field: "time",
+      headerName: "Time",
+      width: 150,
+      flex: 1,
+    },
+    {
       field: "date",
       headerName: "Date",
       width: 150,
       flex: 1,
     },
+   
     {
       field: "status",
       headerName: "Status",
@@ -46,8 +57,8 @@ const Dashboard = () => {
       flex: 1,
     },
     {
-      field: "doctor",
-      headerName: "Doctor",
+      field: "reason",
+      headerName: "Reason",
       width: 150,
       flex: 1,
     },
@@ -84,31 +95,14 @@ const Dashboard = () => {
     },
   ];
 
-  const rows: TableRowsType[] = [
-    {
-      id: 1,
-      patient: "Abbas khan",
-      date: "02 Jan 2024",
-      status: "Scheduled",
-      doctor: "Dr.Atifa Khan",
-    },
-
-    {
-      id: 2,
-      patient: "Nabushan Bi",
-      date: "10 Jan 2024",
-      status: "Pending",
-      doctor: "Dr.Faizan Khan",
-    },
-
-    {
-      id: 3,
-      patient: "Abbas khan",
-      date: "02 Jan 2024",
-      status: "Cancelled",
-      doctor: "Dr.Atifa Khan",
-    },
-  ];
+  const rows: TableRowsType[] = listOfAppoints?.map((ele) => ({
+    id: ele._id,
+    patient: ele.patientName,
+    date: ele.appointmentId?.date?.split("T")[0],
+    time: ele.appointmentId.time,
+    status: ele.appointmentId.status,
+    reason: ele.appointmentId.reason,
+  }));
 
   if (loading) return <Loader></Loader>;
 

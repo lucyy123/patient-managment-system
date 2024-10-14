@@ -65,7 +65,7 @@ export type UserTYPE = {
   appointments?: string[],
   isVerified?: boolean,
   role?: string
-  isCompleted?:boolean
+  isCompleted?: boolean
 }
 
 
@@ -100,7 +100,7 @@ export type AppointReqBodyType = {
   status?: string;
   user: string | undefined;
   physicianName: string;
-  docId:string;
+  docId: string;
   time: string
   date: Date | undefined,
   reason: string
@@ -109,7 +109,7 @@ export type AppointReqBodyType = {
 export type AppointResBodyType = {
   success: boolean;
   message: string
-  appointment:AppointmentType
+  appointment: AppointmentType
 }
 
 export type AppointmentType = {
@@ -118,7 +118,7 @@ export type AppointmentType = {
   user: string
   physicianName: string
   time: string;
-  docId:string;
+  docId: string;
   reason: string
   additionalInfo: string
   date: Date | undefined
@@ -126,49 +126,59 @@ export type AppointmentType = {
 }
 
 export type AppointReducerInitStateType = {
-  appointment:AppointmentType | null,
+  appointment: AppointmentType | null,
   loading: boolean
 }
 
 export type LoginUserResType = {
-success:boolean;
-redirect:boolean;
-message:string;
-user?:UserTYPE 
+  success: boolean;
+  redirect: boolean;
+  message: string;
+  user?: UserTYPE
 }
 
-export type LoginUserReqBodyType ={
-  phoneNumber:string
+export type LoginUserReqBodyType = {
+  phoneNumber: string
 }
 
-type AdminType ={
-  name:string;
-  email:string;
-  passkeys:string;
-  discription:string;
-  speciality:string
+type AdminType = {
+  _id: string;
+  name: string;
+  email: string;
+  passkeys: string;
+  discription: string;
+  speciality: string
 
 }
 
-export type AdminResMes={
-  success:boolean;
-  admin:AdminType
+export type AdminResMes = {
+  success: boolean;
+  admin: AdminType
 }
 
-export type AdminReqbodyType ={
+export type AdminReqbodyType = {
   passkeys
 }
 
-export type AdminInitStateType ={
-admin:AdminType | null
-loading:boolean
+export type AdminInitStateType = {
+  admin: AdminType | null
+  loading: boolean
 }
 
-export type AdminsType ={
-  admins:AdminItemType[]
+export type AdminsType = {
+  admins: AdminItemType[]
 }
 type AdminItemType = {
-  name:string;
-  speciality:string;
+  name: string;
+  speciality: string;
+  _id: string
+}
+
+type userAppointDisplayOnDashboardType = {
+  patientPhone: string;
+  patientEmail: string;
+  patientName: string;
+  appointmentId: AppointmentType
   _id:string
+
 }

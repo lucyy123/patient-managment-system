@@ -22,8 +22,20 @@ const schema = new mongoose.Schema(
 
     appointmentsOfUsers: [
       {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
+        patientName:{
+          type:String
+        },
+        patientEmail:{
+          type:String
+
+        },
+        patientPhone:{
+          type:String
+        },
+        appointmentId:{
+          type:mongoose.Types.ObjectId,
+          ref:"Appointment"
+        },
       },
     ],
     discription: {

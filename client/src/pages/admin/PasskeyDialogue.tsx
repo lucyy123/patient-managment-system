@@ -51,7 +51,7 @@ const DialogPasskey = ({
       if (res.success) {
         dispatch(adminExist(res.admin));
         toast.success(`Welcome ${res.admin.name}`);
-        navigate(routeName);
+        navigate(`${routeName}/${res.admin._id}`);
         setLoading(false)
       }
     } catch (error) {

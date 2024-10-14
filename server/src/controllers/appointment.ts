@@ -37,7 +37,12 @@ export const newAppointment = TryCatch(
         // appointments of admin / doctor
 
         const appointedDoctor = await Admin.findById(docId)
-        appointedDoctor?.appointmentsOfUsers.push(user as String)
+        appointedDoctor?.appointmentsOfUsers.push({
+        patientName:userfor?.name,
+        patientEmail:userfor?.email,
+        patientPhone:userfor?.phoneNumber,
+        appointmentId:[newAppoint._id],
+        });
         appointedDoctor?.save()
 
         res.status(201).json({

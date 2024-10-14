@@ -41,6 +41,7 @@ export const adminAuthenticaton = TryCatch(async (req, res, next) => {
 });
 
 //*-----------------------------Admin logut-------------------------
+
 export const logoutAdmin = TryCatch(async (req, res, next) => {
     res.clearCookie('authAdminToken', {
         sameSite: 'strict',
@@ -76,13 +77,17 @@ export const allAppointments = TryCatch(async (req, res, next,) => {
     const { id } = req.params
 
     if (!id) return next(new ErrorHanlder("Invalid Id", 404))
-    const admin = await Admin.findById(id).populate('appointmentsOfUsers')
+    const admin = await Admin.findById(id).populate({ path:'appointmentsOfUsers',populate:{
+path:'appointmentId'
+}
+
+
+
+    }).select('appointmentsOfUsers')
     if (!admin) return next(new ErrorHanlder("No Appointment is scheduled", 404))
     res.status(200).json({
         success: true,
-        appointments: admin
-
-
+        appointmentsOfUsers: admin.appointmentsOfUsers
     })
 
 

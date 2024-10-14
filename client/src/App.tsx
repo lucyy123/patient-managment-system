@@ -74,7 +74,7 @@ const App = () => {
             }
           >
           </Route> */}
-            <Route path="/admin/dashboard" element={<Dashboard />} /> 
+            <Route path="/admin/dashboard/:docId" element={<Dashboard />} /> 
         </Routes>
       </Suspense>
       <Toaster position="bottom-center" />

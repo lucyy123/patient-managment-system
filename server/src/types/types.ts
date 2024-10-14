@@ -87,8 +87,6 @@ export type UserRegisterBody = {
 }
 
 //------------------------------Appointments------------------------------
-
-
 export type AppointmentBody = {
     docId:string
     status?: string;
