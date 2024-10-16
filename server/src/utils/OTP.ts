@@ -13,17 +13,16 @@ export const generateOTP = () => {
 
 
 
-
 const accountSid = process.env.TWILIO_ACC_SID  ;
 const authToken = process.env.TWILIO_AUTH_TOKEN ;  
 
 const client = twilio(accountSid, authToken);
 
-export const sendOtp = async (userMobileNumber:string, otp:string) => {
+export const sendOtp = async (userMobileNumber:string, otp:string,messageBody:string ) => {
   try {
     const myNumber = process.env.TWILIO_MY_NUMBER
     const message = await client.messages.create({
-      body: `Your Care Plus verification code is: ${otp}. Please use this code to complete your registration. Do not share this code with anyone for security purposes.`,  // Message content
+      body: messageBody,                             //*-------- Message content
       from: myNumber,              
       to: `+91${userMobileNumber}`                   //*------ User's phone number 
     });

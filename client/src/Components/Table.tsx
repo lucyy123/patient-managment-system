@@ -15,7 +15,7 @@ const AdminTable = ({columns,rows}:Props) => {
  {  rows &&  rows.length> 0 ? (  <DataGrid 
     columns={columns} 
     rows={rows}
-    
+    autoPageSize
     />):(
 
       <div style={{

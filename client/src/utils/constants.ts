@@ -16,13 +16,13 @@ export const dashboardCardsContent: CardsContentsType[] = [
     {
         icon: EventAvailableOutlined,
         subtitle: 'Total number of scheduled appointments',
-        color: 'yellow'
+        color: 'rgb(9, 248, 85)'
 
     },
     {
         icon: HourglassEmptyOutlined,
         subtitle: 'Total number of pending appointments',
-        color: '#1976d2'
+        color: 'yellow'
 
     },
     {
@@ -79,7 +79,7 @@ export function convertTimeFormate(timeString: string) {
 }
 
 
-export const getAllDoctorsList = async ():Promise<AdminsType | []>   =>{
+export const getAllDoctorsList = async (): Promise<AdminsType | []> => {
     try {
         const baseUrl = `${import.meta.env.VITE_SERVER_BASE_URL}/api/v1/admin/get/all`;
         const res = await axios.get(baseUrl)

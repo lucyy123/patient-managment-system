@@ -1,7 +1,8 @@
 import { Admin } from "../models/admin.js";
 import { Appointment } from "../models/appointment.js";
-import { User } from '../models/user.js';
+import { User } from "../models/user.js";
 import ErrorHanlder from "../utils/errorHandler.js";
+import { sendOtp } from "../utils/OTP.js";
 import { TryCatch } from "../utils/tryCatch.js";
 //*------------------------------------------------  new appointment----------------------------------------------
 export const newAppointment = TryCatch(async (req, res, next) => {
@@ -15,7 +16,7 @@ export const newAppointment = TryCatch(async (req, res, next) => {
         docId,
         date,
         reason,
-        additionalInfo
+        additionalInfo,
     });
     // users appointments
     const userfor = await User.findById(user);
@@ -30,6 +31,8 @@ export const newAppointment = TryCatch(async (req, res, next) => {
         appointmentId: [newAppoint._id],
     });
     appointedDoctor?.save();
+    const message = `Dear ${userfor?.name}, we have received your appointment request. We will notify you once your physician updates the appointment.`;
+    await sendOtp(userfor?.phoneNumber, "", message);
     res.status(201).json({
         success: true,
         message: "You Make a new Appointment",
@@ -45,26 +48,38 @@ export const updateAppointment = TryCatch(async (req, res, next) => {
     const { id } = req.params;
     if (!id)
         return next(new ErrorHanlder("Invalid Appointment Id", 404));
-    let { status } = req.body;
+    let { status, reason, phoneNumber, name } = req.body;
+    console.log('status:', status);
+    console.log('name:', name);
+    console.log('phoneNumber:', phoneNumber);
+    console.log("reason:", reason);
     if (!status)
         return next(new ErrorHanlder("Provide Status Value", 404));
     const appointment = await Appointment.findById(id);
     if (!appointment)
         return next(new ErrorHanlder("appointment not found", 404));
     switch (String(status).toLowerCase()) {
-        case 'pending':
+        case "pending":
             appointment.status = status;
             break;
-        case 'cancelled':
+        case "cancelled":
             appointment.status = status;
         default:
             appointment.status = status;
             break;
     }
     await appointment.save();
+    let message;
+    if (status == "cancelled") {
+        message = `Dear ${name}, we regret to inform you that your appointment has been canceled. Reason for cancellation: ${reason}. Please book a new appointment. We apologize for the inconvenience.`;
+    }
+    else {
+        message = `Dear ${name}, your appointment has been successfully scheduled  with ${appointment.physicianName} on ${String(appointment.date).split("T")[0]} at ${appointment.time}. Please arrive 10 minutes early.`;
+    }
+    await sendOtp(phoneNumber, "", message);
     res.status(200).json({
         success: true,
         message: "Appointment Status Updated",
-        updatedAppointment: appointment
+        updatedAppointment: appointment,
     });
 });

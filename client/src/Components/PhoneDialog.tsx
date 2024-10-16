@@ -1,3 +1,4 @@
+import { CallOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -6,25 +7,20 @@ import {
   DialogContent,
   IconButton,
   InputAdornment,
-  Stack,
   TextField,
-  Typography,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Dispatch, useState } from "react";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DialogHeader from "../pages/admin/DialogHeader";
 import { useLoginUserMutation } from "../redux/apis/userApi";
 import { userExist } from "../redux/reducers/user";
 import {
-  LoginUserResType,
-  UserReducerInitialState,
-  UserRegistrationResMsg,
+  LoginUserResType
 } from "../vite-env";
-import { CallOutlined } from "@mui/icons-material";
 import DialogComponent from "./Dialog";
 
 type Props = {
@@ -69,7 +65,7 @@ const PhoneDialoge = ({ handelOpen, open = true }: Props) => {
       toast.error(data.message);
 
       // redirect user to otp section
-      setDailogueOpen(true);
+      // setDailogueOpen(true);
       setLoading(false);
       // catchError(error,UserRegistrationResMsg)
     }

@@ -1,31 +1,74 @@
-import { CalendarTodayOutlined, Search } from "@mui/icons-material";
 import {
-    Button,
-    Dialog,
-    DialogContent,
-    IconButton,
-    InputAdornment,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    Stack,
-    TextField,
-    Typography,
-    useTheme
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  Stack,
+  Typography,
+  useTheme,
 } from "@mui/material";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Dispatch } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../../Components/Loader";
+import { useLazyGetAllAppointmentsQuery } from "../../redux/apis/adminApi";
+import { useUpdateAppointmentMutation } from "../../redux/apis/appointment";
+import { getAllAppointments } from "../../redux/reducers/appointment";
+import {
+  AdminInitStateType,
+  TableRowsType,
+  UpdateAppResBodyType,
+} from "../../vite-env";
 import DialogHeader from "./DialogHeader";
 
 type Props = {
   open?: boolean;
   handelOpen: Dispatch<React.SetStateAction<boolean>>;
+  row: TableRowsType ;
 };
-const AppointmentDialogue = ({ handelOpen, open }: Props) => {
+const AppointmentDialogue = ({ handelOpen, open, row }: Props) => {
+  console.log('row:', row)
   const theme = useTheme();
-  const handleOTP = (event: React.FormEvent<HTMLFormElement>) => {
+  const dispatch = useDispatch();
+  const { admin, loading } = useSelector(
+    (state: { adminReducer: AdminInitStateType }) => state.adminReducer
+  );
+
+  const [updateAppointment] = useUpdateAppointmentMutation();
+
+  const [fetchingAppointmests] = useLazyGetAllAppointmentsQuery();
+  const handleAppointement = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    handelOpen(false);
+    try {
+      const res = await updateAppointment({
+        status: "scheduled",
+        reason:'',
+        phoneNumber:row.phoneNumber! ,
+        id: row?.appointmentId,
+        name:row?.patient
+      }).unwrap();
+      if (res.success) {
+        toast.success(res.message);
+        const responses = await fetchingAppointmests(admin?._id).unwrap();
+        if (responses.success) {
+          dispatch(getAllAppointments(responses.appointmentsOfUsers));
+        }
+      }
+      handelOpen(false);
+    } catch (error) {
+      console.log("error:", error);
+      handelOpen(false);
+      const err = error as FetchBaseQueryError;
+      const data = err.data as UpdateAppResBodyType;
+      toast.error(data.message);
+    }
   };
+
+  if (loading) return <Loader></Loader>;
+
   return (
     <Dialog
       open={open!}
@@ -33,7 +76,7 @@ const AppointmentDialogue = ({ handelOpen, open }: Props) => {
       PaperProps={{
         component: "form",
 
-        onSubmit: handleOTP,
+        onSubmit: handleAppointement,
         sx: {
           backgroundColor: theme.palette.background.default,
           padding: 2,
@@ -43,7 +86,7 @@ const AppointmentDialogue = ({ handelOpen, open }: Props) => {
     >
       <DialogHeader
         title="Schedule Appointment"
-        subtitle="Please fill in the following details to schedule"
+        subtitle="Please check the informatio before schedule"
         handelOpen={handelOpen}
       />
 
@@ -62,42 +105,26 @@ const AppointmentDialogue = ({ handelOpen, open }: Props) => {
             >
               Doctor
             </Typography>
-
-            <Select
-              size="small"
-              fullWidth
-              sx={{
-                border: "1px solid",
-                color: "white",
-              }}
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              input={
-                <OutlinedInput
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <IconButton edge="start">
-                        <Search
-                          sx={{
-                            color: "#CDCECF",
-                            marginInline: "0.23rem",
-                            background: "none",
-                          }}
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-              }
-              //   value={}
-              //   label="Select Physician"
-
-              //   onChange={}
-            >
-              <MenuItem value={10}>Dr. Atifa Khan</MenuItem>
-              <MenuItem value={20}>Dr. Faizan khan</MenuItem>
-              <MenuItem value={30}>Dr. Shiba</MenuItem>
-            </Select>
+            <Stack direction={"row"}>
+              <Typography
+                sx={{
+                  color: "#fff",
+                  fontSize: "1.5rem",
+                  marginRight: "auto",
+                }}
+              >
+                {admin?.name}
+              </Typography>
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "#fff",
+                  fontWeight: "700",
+                }}
+              >
+                {admin?.speciality}
+              </Button>
+            </Stack>
           </Stack>
           <Stack gap={1}>
             <Typography
@@ -105,64 +132,54 @@ const AppointmentDialogue = ({ handelOpen, open }: Props) => {
                 color: theme.palette.text.secondary,
               }}
             >
-              Reason For appointment
+              Reason
             </Typography>
-            <TextField
-              //   size="small"
-              sx={{
-                border: "1px solid",
-                borderRadius: "8px",
-              }}
-              fullWidth
-              multiline
-              rows={3}
-              placeholder="ex:monthly check-up"
-            />
+            <Typography variant="body2">{row?.reason}</Typography>
           </Stack>
-          <Stack gap={1}>
-            <Typography
+          <Stack gap={1} direction={"row"}>
+            <Box
               sx={{
-                color: theme.palette.text.secondary,
+                marginRight: "auto",
               }}
             >
-              expected appointment date
-            </Typography>
-            <TextField
-              size="small"
-              type="date"
-              sx={{
-                border: "1px solid",
-                borderRadius: "8px",
-              }}
-              fullWidth
-              placeholder="Select Your Birth Date"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        edge="start"
-                      >
-                        {/* ----------------- Calender icon---------------- */}
-                        <CalendarTodayOutlined
-                          sx={{
-                            color: "#CDCECF",
-                            marginInline: "0.23rem",
-                            background: "none",
-                          }}
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
+              <Typography
+                sx={{
+                  color: theme.palette.text.secondary,
+                }}
+              >
+                Date
+              </Typography>
+              <Typography
+                sx={{
+                  color: "#fff",
+                }}
+              >
+                {row?.date}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography
+                sx={{
+                  color: theme.palette.text.secondary,
+                }}
+              >
+                Time
+              </Typography>
+              <Typography
+                sx={{
+                  color: "#fff",
+                }}
+              >
+                {row?.time}
+              </Typography>
+            </Box>
           </Stack>
         </Stack>
 
         <Button
           fullWidth
+          type="submit"
           sx={{
             marginTop: "1.7rem",
             textTransform: "none",

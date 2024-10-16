@@ -11,16 +11,12 @@ export const adminReducer = createSlice({
     name: "adminReducer",
     initialState,
     reducers: {
-    
-    adminExist: (state, action: PayloadAction<AdminType>) => {
-
+        adminExist: (state, action: PayloadAction<AdminType>) => {
             state.admin = action.payload
             state.loading = false
-
-
         }
     }
 });
 
 
-export const {adminExist} = adminReducer.actions
+export const { adminExist } = adminReducer.actions

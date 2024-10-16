@@ -31,4 +31,4 @@ export const adminApi = createApi({
 });
 
 
-export const {useVerifyAdminMutation,useLogoutAdminQuery,useGetAllAppointmentsQuery}= adminApi
+export const {useVerifyAdminMutation,useLogoutAdminQuery,useGetAllAppointmentsQuery,useLazyGetAllAppointmentsQuery}= adminApi
