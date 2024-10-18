@@ -21,3 +21,24 @@ a {
     background: linear-gradient(90deg, #D7EDED29  0%, #CCEBEB00 100%);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+/* Global scrollbar styling in index.css */
+
+  
+  *::-webkit-scrollbar {
+    width: 8px; /* Set the width of the scrollbar */
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: #24AE7C; /* Color of the thumb */
+    border-radius: 10px; /* Rounded scrollbar thumb */
+  }
+  
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Hover effect */
+  }
+  
+  *::-webkit-scrollbar-track {
+    background-color: #131619; /* Track background color */
+  }
+  

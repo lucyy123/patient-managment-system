@@ -46,9 +46,12 @@ import { useUpdateUserMutation } from "../redux/apis/userApi";
 import toast from "react-hot-toast";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { userExist } from "../redux/reducers/user";
+import useGetUser from "../hooks/useGetUser";
 
 const PatientsForm = () => {
+  useGetUser()
   const navigate = useNavigate();
+
   const { loading, user } = useSelector(
     (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
@@ -184,7 +187,7 @@ const PatientsForm = () => {
         }}
       >
         {/* ------------------------ logo + heading--------------------------- */}
-        <Heading />
+        <Heading showLogout = {true} />
 
         {/* ---------------welcome----------------------- */}
 

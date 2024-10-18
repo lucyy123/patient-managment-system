@@ -3,6 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Loader from "./Components/Loader";
+import NotFound from "./Components/NotFound";
 import ProtectedRoute from "./utils/protectedRoutes";
 import { UserReducerInitialState } from "./vite-env";
 
@@ -59,8 +60,13 @@ const App = () => {
             }
           >
             <Route path="/patient" element={<PatientsForm />} />
-            <Route path="/appointment" element={<Appointment />} />
-            <Route path="/success" element={<Success />} />
+          
+          </Route>
+
+          <Route element ={< ProtectedRoute isAuthenticated = {user?.isVerified && user?.isCompleted ? true :false } />  }>
+          <Route path="/appointment" element={<Appointment />} />
+          <Route path="/success" element={<Success />} />
+
           </Route>
 
           {/* --------------------- Admin routes------------------------------ */}
@@ -75,6 +81,7 @@ const App = () => {
           >
           </Route> */}
             <Route path="/admin/dashboard/:docId" element={<Dashboard />} /> 
+            <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       <Toaster position="bottom-center" />

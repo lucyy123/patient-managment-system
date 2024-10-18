@@ -10,15 +10,14 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import DialogComponent from "../Components/Dialog";
 import PhoneDialoge from "../Components/PhoneDialog";
 import Heading from "../Components/shared/Heading";
 import { useUserRegisterMutation } from "../redux/apis/userApi";
-import { userExist } from "../redux/reducers/user";
+import { userExist, userNotExist } from "../redux/reducers/user";
 import DialogPasskey from "./admin/PasskeyDialogue";
 
 const OnBoarding = () => {
@@ -74,6 +73,9 @@ const OnBoarding = () => {
  const hanldeAdminDialogue = ()=>{
   setOpenAdmin(true)
  }
+ useEffect(()=>{
+  dispatch(userNotExist())
+ },[dispatch])
 
 
 

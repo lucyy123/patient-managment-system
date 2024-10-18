@@ -56,7 +56,8 @@ export const allAppointments = TryCatch(async (req, res, next) => {
     const { id } = req.params;
     if (!id)
         return next(new ErrorHanlder("Invalid Id", 404));
-    const admin = await Admin.findById(id).populate({ path: 'appointmentsOfUsers', populate: {
+    const admin = await Admin.findById(id).populate({
+        path: 'appointmentsOfUsers', populate: {
             path: 'appointmentId'
         }
     }).select('appointmentsOfUsers');

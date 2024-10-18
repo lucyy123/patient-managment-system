@@ -69,12 +69,13 @@ export const updateAppointment = TryCatch(async (req, res, next) => {
             break;
     }
     await appointment.save();
+    const date = appointment?.date ? new Date(appointment.date) : null;
     let message;
     if (status == "cancelled") {
         message = `Dear ${name}, we regret to inform you that your appointment has been canceled. Reason for cancellation: ${reason}. Please book a new appointment. We apologize for the inconvenience.`;
     }
     else {
-        message = `Dear ${name}, your appointment has been successfully scheduled  with ${appointment.physicianName} on ${String(appointment.date).split("T")[0]} at ${appointment.time}. Please arrive 10 minutes early.`;
+        message = `Dear ${name}, your appointment has been successfully scheduled  with ${appointment.physicianName} on ${date?.toDateString()} at ${appointment.time}. Please arrive 10 minutes early.`;
     }
     await sendOtp(phoneNumber, "", message);
     res.status(200).json({

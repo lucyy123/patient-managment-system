@@ -108,7 +108,7 @@ const Appointment = () => {
           padding: { xs: "3rem 1rem", md: "2rem 6rem" },
         }}
       >
-        <Heading />
+        <Heading showLogout = {true} />
 
         {/* ?------------------------ sub heading --------------------------------------------- */}
 

@@ -4,12 +4,12 @@ import {
   Button,
   Stack,
   Typography,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import AppointmentCard from "../../Components/AppointmentCard";
 import Loader from "../../Components/Loader";
 import Heading from "../../Components/shared/Heading";
@@ -23,11 +23,18 @@ import {
 } from "../../vite-env";
 import AppointmentDialogue from "./AppointmentDialogue";
 import CancelDialogue from "./CancelDailog";
+import { Logout } from "@mui/icons-material";
+import { useLogoutAdminQuery } from "../../redux/apis/adminApi";
+import toast from "react-hot-toast";
+import { adminExist, adminNotExist } from "../../redux/reducers/admin";
+import LogoutComponent from "../../Components/shared/Logout";
+import { userNotExist } from "../../redux/reducers/user";
 
 const Dashboard = () => {
   const { docId } = useParams();
   useGetAllAppointments({ docId });
   const [open, setOpen] = useState<boolean>(false);
+  const [dialogue, setDialogue] = useState<boolean>(false);
   const [cancelOpen, setCancelOpen] = useState<boolean>(false);
   const { admin, loading } = useSelector(
     (state: { adminReducer: AdminInitStateType }) => state.adminReducer
@@ -41,7 +48,10 @@ const Dashboard = () => {
   const [scheduled, setScheduled] = useState<number>();
   const [pendings, setPendings] = useState<number>();
   const [cancelled, setCancelled] = useState<number>();
-
+const dispatch = useDispatch()
+  const { refetch: logoutAdmin } = useLogoutAdminQuery("");
+  
+  const navigate = useNavigate();
   useEffect(() => {
     const pend = docAppointments?.filter(
       (ele) => ele.appointmentId.status === "pending"
@@ -55,6 +65,8 @@ const Dashboard = () => {
       (ele) => ele.appointmentId.status === "scheduled"
     );
     setScheduled(sche?.length);
+
+    dispatch(userNotExist())
   }, [docId, docAppointments]);
 
   const theme = useTheme();
@@ -89,7 +101,7 @@ const Dashboard = () => {
           color={params.value == "scheduled" ? "success" : "error"}
           sx={{
             textTransform: "none",
-            color:params.value == "pending"? "#000" : "#fff",
+            color: params.value == "pending" ? "#000" : "#fff",
             backgroundColor: params.value == "pending" ? "yellow" : "none",
           }}
         >
@@ -111,8 +123,7 @@ const Dashboard = () => {
 
       getActions: (params) => [
         <Stack direction={"row"}>
-          
-{params.row.status === "pending"?   (
+          {params.row.status === "pending" ? (
             <Button
               variant="text"
               sx={{
@@ -126,9 +137,9 @@ const Dashboard = () => {
             >
               Schedule
             </Button>
-          ):null}
+          ) : null}
 
-          {params.row.status === "cancelled"  ? (
+          {params.row.status === "cancelled" ? (
             <Button
               variant="text"
               sx={{
@@ -144,7 +155,7 @@ const Dashboard = () => {
             </Button>
           ) : (
             <Button
-            disabled ={params.row.status === 'scheduled'}
+              disabled={params.row.status === "scheduled"}
               variant="text"
               sx={{
                 color: "red",
@@ -153,7 +164,8 @@ const Dashboard = () => {
               onClick={() => {
                 setTargetedRow(params.row);
 
-                setCancelOpen(true)}}
+                setCancelOpen(true);
+              }}
             >
               Cancel
             </Button>
@@ -171,8 +183,25 @@ const Dashboard = () => {
     status: ele.appointmentId.status,
     reason: ele.appointmentId.reason,
     appointmentId: ele.appointmentId._id,
-    phoneNumber:ele.patientPhone
+    phoneNumber: ele.patientPhone,
   }));
+
+  //*----------------------HANDELS-------------
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutAdmin().unwrap();
+      console.log("res:", res);
+      if (res.success) {
+        toast.success("Logout Successfully");
+        setDialogue((pre) => !pre);
+        dispatch(adminNotExist())
+        navigate('/')
+      }
+    } catch (error) {
+      console.log("error:", error);
+    }
+  };
 
   if (loading) return <Loader></Loader>;
 
@@ -202,8 +231,11 @@ const Dashboard = () => {
           <Typography variant="subtitle2" fontSize={"1.2rem"}>
             {admin?.name}
           </Typography>
+
+          <LogoutComponent dialogue = {dialogue} setDialogue={setDialogue} handleLogout={handleLogout} Boxposition="absolute"/>
         </Stack>
       </Stack>
+
 
       {/* -------------------------------- Content ------------------------------- */}
 
@@ -233,7 +265,6 @@ const Dashboard = () => {
           handelOpen={setOpen}
           open={open}
           row={targetedRow!}
-          
         />
         {/* ----------------------------------Cancel Dialogue------------------------- */}
         <CancelDialogue

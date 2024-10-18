@@ -46,7 +46,7 @@ export const verifOTP = TryCatch(async (req, res, next) => {
     if (!user)
         return next(new ErrorHanlder("User not found", 404));
     if (user?.otp !== otp || Number(user?.otpExpires) < Date.now()) {
-        return next(new ErrorHanlder("Invalid or Expired OTP", 404));
+        return next(new ErrorHanlder("Invalid or Expired OTP,Please try Login", 404));
     }
     user.isVerified = true;
     user.otp = undefined;
@@ -62,7 +62,7 @@ export const verifOTP = TryCatch(async (req, res, next) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 3 * 60 * 60 * 1000, // 2 hour expiration
+        maxAge: 3 * 60 * 60 * 1000, // 3 hour expiration
         path: "/",
     })
         .status(200)
@@ -131,9 +131,9 @@ export const loginUser = TryCatch(async (req, res, next) => {
     }
     const user = await User.findOne({ phoneNumber });
     if (!user) {
-        return next(new ErrorHanlder("User not found", 404));
+        return next(new ErrorHanlder("Please Check your phone Number or try Get started", 404));
     }
-    // If user is not verified, they need to verify through OTP
+    // If user is not verified, they need to verify through OTP - //! re-sent OTP functionality
     if (!user.isVerified) {
         // reset the already filled value
         user.otp = undefined;
@@ -143,7 +143,9 @@ export const loginUser = TryCatch(async (req, res, next) => {
         user.otp = otp;
         user.otpExpires = String(otpExpires);
         await user.save();
-        return next(new ErrorHanlder("Enter the OTP for verification", 404));
+        const message = `Your Care Plus verification code is: ${otp}. Please use this code to complete your registration. Do not share this code with anyone for security purposes.`;
+        await sendOtp(user.phoneNumber, user.otp, message);
+        return next(new ErrorHanlder("we have sent you a new OTP, Please Enter the OTP for Login", 404));
     }
     // If user is verified, generate a new token
     const secret_key = process.env.SECRET_TOKEN_KEY;

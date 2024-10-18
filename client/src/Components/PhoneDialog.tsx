@@ -63,9 +63,9 @@ const PhoneDialoge = ({ handelOpen, open = true }: Props) => {
       const err = error as FetchBaseQueryError;
       const data = err.data as LoginUserResType;
       toast.error(data.message);
-
+  if(data.message.includes('we')) return  setDailogueOpen(true);
       // redirect user to otp section
-      // setDailogueOpen(true);
+     
       setLoading(false);
       // catchError(error,UserRegistrationResMsg)
     }
@@ -160,6 +160,9 @@ const PhoneDialoge = ({ handelOpen, open = true }: Props) => {
         open={dailogueOpen}
         handelOpen={setDailogueOpen}
         phoneNumber={phoneNumber}
+        title={"Re-Sent OTP"}
+        subtitle={"we have sent you a new OTP on your mobile,"}
+        routeName={"/patient"}
       />
     </>
   );
