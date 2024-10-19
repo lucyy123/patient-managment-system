@@ -8,7 +8,8 @@ const useGetUser = () => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/v1/user/get`, {
+                const baseUrl = `${import.meta.env.VITE_SERVER_BASE_URL}/api/v1/user/get`
+                const res = await axios.get(baseUrl, {
                     withCredentials: true
                 });
                 dispatch(userExist(res.data.user))
