@@ -8,9 +8,9 @@ import { ErrorMiddleware } from './middlewares/error.js';
 import { mongoDataBase } from './utils/mongoDb.js';
 
 //*------------------------------ routes imports---------------------------
+import adminRoutes from './routes/admin.js';
 import appointmentRoutes from './routes/appointment.js';
 import userRoutes from './routes/user.js';
-import adminRoutes from './routes/admin.js'
 
 
 
@@ -35,7 +35,7 @@ app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(morgan('dev'))
 //--------preflights-------
-app.options('https://patient-managment-system-seven.vercel.app/', cors(corsOptions))
+app.options('*', cors(corsOptions))
 
 //*------------------------------------- Caching -----------------------------
 
