@@ -10,14 +10,16 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { FormEvent, useEffect, useState } from "react";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import DialogComponent from "../Components/Dialog";
 import PhoneDialoge from "../Components/PhoneDialog";
 import Heading from "../Components/shared/Heading";
 import { useUserRegisterMutation } from "../redux/apis/userApi";
-import { userExist, userNotExist } from "../redux/reducers/user";
+import { userExist } from "../redux/reducers/user";
+import { UserRegistrationResMsg } from "../vite-env";
 import DialogPasskey from "./admin/PasskeyDialogue";
 
 const OnBoarding = () => {
@@ -49,9 +51,11 @@ const OnBoarding = () => {
       setOpen(true); // opne the OTP dialogue
       setLoading(false);
     } catch (error) {
-      console.log("error:", error);
-      toast.error("user already register");
       setLoading(false);
+      console.log('error:', error)
+      const err = error as FetchBaseQueryError;
+      const data = err.data as UserRegistrationResMsg;
+      toast.error(data.message);
     }
   };
   //*-------------- FOR ONCHANGING----------------------
@@ -73,9 +77,9 @@ const OnBoarding = () => {
  const hanldeAdminDialogue = ()=>{
   setOpenAdmin(true)
  }
- useEffect(()=>{
-  dispatch(userNotExist())
- },[dispatch])
+//  useEffect(()=>{
+//   dispatch(userNotExist())
+//  },[dispatch])
 
 
 
