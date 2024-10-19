@@ -26,7 +26,7 @@ export const adminAuthenticaton = TryCatch(async (req, res, next) => {
     // Store the token in a cookie
     res.cookie('authAdminToken', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+         secure:true,
         sameSite: 'strict',
         maxAge: 3 * 60 * 60 * 1000, // 3-hour expiration
         path: '/',
@@ -46,7 +46,7 @@ export const logoutAdmin = TryCatch(async (req, res, next) => {
     res.clearCookie('authAdminToken', {
         sameSite: 'strict',
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+       secure:true,
     });
 
     return res.status(200).json({

@@ -101,7 +101,7 @@ export const verifOTP = TryCatch(
     res
       .cookie("authToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+      secure:true,
         sameSite: "strict",
         maxAge: 3 * 60 * 60 * 1000, // 3 hour expiration
         path: "/",
@@ -237,7 +237,7 @@ export const loginUser = TryCatch(
     // Store the token in a cookie
     res.cookie("authToken", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+    secure:true,
       sameSite: "strict",
       maxAge: 3 * 60 * 60 * 1000, // 3-hour expiration
       path: "/",
@@ -258,7 +258,7 @@ export const logoutUser = TryCatch(async (req, res, next) => {
   res.clearCookie("authToken", {
     sameSite: "strict",
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+  secure:true,
   });
 
   return res.status(200).json({
