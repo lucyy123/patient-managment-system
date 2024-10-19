@@ -16,6 +16,8 @@ const ProtectedRoute = ({
   redirect = "/",
   isAuthenticated,
 }: Props) => {
+  console.log('isAuthenticated:', isAuthenticated)
+
   if (!isAuthenticated) {
     return <Navigate to={redirect} replace />;
   }

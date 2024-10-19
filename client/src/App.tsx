@@ -45,6 +45,9 @@ const App = () => {
   const { user } = useSelector(
     (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
+  console.log('user?.role:', user?.role)
+  console.log(' user?.isVerified:',  user?.isVerified)
+  console.log('  user?.isCompleted:',   user?.isCompleted)
   return (
     <Router>
       <Suspense fallback={<Loader />}>
