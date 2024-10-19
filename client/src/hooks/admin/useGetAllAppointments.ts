@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useGetAllAppointmentsQuery } from "../../redux/apis/adminApi";
-import { DocAppointmentInitStateType, userAppointDisplayOnDashboardType } from "../../vite-env";
-import { useDispatch, useSelector } from "react-redux";
 import { getAllAppointments } from "../../redux/reducers/appointment";
 type Props = {
   docId: string | undefined;

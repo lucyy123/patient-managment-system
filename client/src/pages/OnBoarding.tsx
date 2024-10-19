@@ -74,6 +74,7 @@ const OnBoarding = () => {
   setOpenAdmin(true)
  }
  useEffect(()=>{
+  
   dispatch(userNotExist())
  },[dispatch])
 

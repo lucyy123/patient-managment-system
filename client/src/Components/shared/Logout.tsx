@@ -1,11 +1,13 @@
 import { Logout } from "@mui/icons-material";
 import { Button, useTheme } from "@mui/material";
 
+type Position = "static" | "relative" | "absolute" | "fixed" | "sticky";
+
 type Props = {
   dialogue: boolean;
   setDialogue: (value: React.SetStateAction<boolean>) => void;
   handleLogout: () => Promise<void>;
-  Boxposition:string;
+  Boxposition:Position ;
 };
 
 const LogoutComponent = ({ dialogue, handleLogout, setDialogue,Boxposition }: Props) => {
@@ -22,7 +24,7 @@ const LogoutComponent = ({ dialogue, handleLogout, setDialogue,Boxposition }: Pr
       <dialog
         open={dialogue}
         style={{
-          position:Boxposition,
+          position:Boxposition ,
           top: "8.5%",
           left: "calc(98% - 5rem)",
         }}

@@ -8,14 +8,19 @@ import {
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import AppointmentCard from "../../Components/AppointmentCard";
 import Loader from "../../Components/Loader";
 import Heading from "../../Components/shared/Heading";
+import LogoutComponent from "../../Components/shared/Logout";
 import SubHeading from "../../Components/shared/SubHeading";
 import AdminTable from "../../Components/Table";
 import useGetAllAppointments from "../../hooks/admin/useGetAllAppointments";
+import { useLogoutAdminQuery } from "../../redux/apis/adminApi";
+import { adminNotExist } from "../../redux/reducers/admin";
+import { userNotExist } from "../../redux/reducers/user";
 import {
   AdminInitStateType,
   DocAppointmentInitStateType,
@@ -23,12 +28,6 @@ import {
 } from "../../vite-env";
 import AppointmentDialogue from "./AppointmentDialogue";
 import CancelDialogue from "./CancelDailog";
-import { Logout } from "@mui/icons-material";
-import { useLogoutAdminQuery } from "../../redux/apis/adminApi";
-import toast from "react-hot-toast";
-import { adminExist, adminNotExist } from "../../redux/reducers/admin";
-import LogoutComponent from "../../Components/shared/Logout";
-import { userNotExist } from "../../redux/reducers/user";
 
 const Dashboard = () => {
   const { docId } = useParams();
@@ -175,7 +174,7 @@ const dispatch = useDispatch()
     },
   ];
 
-  const rows: TableRowsType[] = docAppointments?.map((ele) => ({
+  const rows: TableRowsType[]  =  (docAppointments ?? [] ).map((ele) => ({
     id: ele._id,
     patient: ele.patientName,
     date: String(ele.appointmentId?.date).split("T")[0],
@@ -184,7 +183,7 @@ const dispatch = useDispatch()
     reason: ele.appointmentId.reason,
     appointmentId: ele.appointmentId._id,
     phoneNumber: ele.patientPhone,
-  }));
+  })) ;
 
   //*----------------------HANDELS-------------
 

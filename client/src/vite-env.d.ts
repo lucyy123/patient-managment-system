@@ -1,5 +1,7 @@
-import { SvgIconComponent } from "@mui/icons-material";
 /// <reference types="vite/client" />
+/// <reference types="vite/types/importMeta.d.ts" />
+
+import { SvgIconComponent } from "@mui/icons-material";
 
 export type CardsContentsType = {
   icon: SvgIconComponent;
@@ -8,23 +10,24 @@ export type CardsContentsType = {
 };
 
 export type TableRowsType = {
-  id: number;
+  id: string;
   patient: string;
   date: string;
   status: string;
-  doctor: string;
+  doctor?: string;
   reason: string;
   time: string;
   appointmentId: string;
-  phoneNumber:string;
+  phoneNumber: string;
 };
 
 interface ImportMetaEnv {
-  readonly VITE_FIREBASE_APIKEY: string;
-  readonly VITE_SERVER_BASE_URL: string;
+  readonly VITE_APPWRITE_ID: string
+  readonly VITE_TWILLIO_ID: string
+  readonly VITE_SERVER_BASE_URL :string
 }
 
-interface ImportMeta {
+ type ImportMeta = {
   readonly env: ImportMetaEnv;
 }
 
@@ -103,7 +106,7 @@ export type AppointReqBodyType = {
   physicianName: string;
   docId: string;
   time: string;
-  date: Date | undefined;
+  date: Date | undefined ;
   reason: string;
   additionalInfo?: string;
 };
@@ -164,9 +167,8 @@ export type AdminInitStateType = {
   loading: boolean;
 };
 
-export type AdminsType = {
-  admins: AdminItemType[];
-};
+export type AdminsType= AdminItemType[];
+
 type AdminItemType = {
   name: string;
   speciality: string;
@@ -190,16 +192,16 @@ type UpdateAppResBodyType = {
 type UpdateAppReqBodyType = {
   id: string | undefined;
   status: string;
-  reason?:string;
-  phoneNumber:string;
-  name:string;
- 
+  reason?: string;
+  phoneNumber: string;
+  name: string;
+
 };
 type UpdateAppReqBodyType2 = {
   status: string;
-  reason?:string;
-  phoneNumber:string;
-  name:string;
+  reason?: string;
+  phoneNumber: string;
+  name: string;
 }
 
 type DocAppointment = {
@@ -207,10 +209,11 @@ type DocAppointment = {
   patientName: string;
   patientPhone: string;
   _id: string;
-  appointmentId : AppointmentType
+  appointmentId: AppointmentType
 };
 
-type DocAppointmentInitStateType ={
-  docAppointments : DocAppointment[] | null;
-  loading : boolean
+type DocAppointmentInitStateType = {
+  docAppointments: DocAppointment[] | null;
+  loading: boolean
 }
+

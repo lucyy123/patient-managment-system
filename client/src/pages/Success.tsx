@@ -1,4 +1,5 @@
 import {
+  AccessTime,
   CalendarTodayOutlined,
   CheckCircleOutlineOutlined,
 } from "@mui/icons-material";
@@ -11,18 +12,14 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
-import Heading from "../Components/shared/Heading";
-import useGetUser from "../hooks/useGetUser";
 import { useSelector } from "react-redux";
-import { AppointReducerInitStateType, UserReducerInitialState } from "../vite-env";
+import { Link } from "react-router-dom";
 import Loader from "../Components/Loader";
-import {AccessTime} from '@mui/icons-material';
-import dayjs, { Dayjs } from "dayjs";
+import Heading from "../Components/shared/Heading";
 import { convertDateFormat, convertTimeFormate } from "../utils/constants";
+import { AppointReducerInitStateType } from "../vite-env";
 const Success = () => {
-  const { id } = useParams();
-  // useGetUser(id as string);
+
   const theme = useTheme();
   const {loading,appointment} = useSelector((state:{appointmentReducer:AppointReducerInitStateType})=>state.appointmentReducer)
 

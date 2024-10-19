@@ -1,6 +1,6 @@
+import { Stack, Typography, useTheme } from "@mui/material";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { setRef, Stack, Typography, useTheme } from "@mui/material";
 
 type Props = {
   file: File | undefined;
@@ -8,7 +8,7 @@ type Props = {
 };
 
 const FileUploader = ({ file, setFile }: Props) => {
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles:File[]) => {
     console.log("acceptedFiles:", acceptedFiles[0]);
     setFile(acceptedFiles[0]);
   }, []);

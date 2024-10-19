@@ -1,12 +1,11 @@
-import { Logout } from "@mui/icons-material";
 import { Box, Paper, Stack, Typography } from "@mui/material";
-import LogoutComponent from "./Logout";
 import { useState } from "react";
-import { useLogoutUserQuery } from "../../redux/apis/userApi";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useLogoutUserQuery } from "../../redux/apis/userApi";
 import { userNotExist } from "../../redux/reducers/user";
+import LogoutComponent from "./Logout";
 
 type Props ={
   showLogout?:boolean

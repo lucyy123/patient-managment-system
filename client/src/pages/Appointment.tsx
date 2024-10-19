@@ -13,24 +13,24 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import dayjs, { Dayjs } from "dayjs";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import dayjs from "dayjs";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import Loader from "../Components/Loader";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
+import { useNewAppointmentMutation } from "../redux/apis/appointment";
+import { getAppointment } from "../redux/reducers/appointment";
 import { formatedDate, getAllDoctorsList, getTime } from "../utils/constants";
 import { AdminItemType, AdminsType, AppointResBodyType, UserReducerInitialState } from "../vite-env";
-import { useNewAppointmentMutation } from "../redux/apis/appointment";
-import toast from "react-hot-toast";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { getAppointment } from "../redux/reducers/appointment";
 
 const Appointment = () => {
-  const [value, setValue] = useState<Dayjs | null>(dayjs(getTime));
-  const [datevalue, setDateValue] = useState<Dayjs | null>(dayjs(formatedDate));
+  const value = dayjs(getTime);
+  const datevalue = dayjs(formatedDate)
   const [isLoading,setIsLoading]=useState<boolean>()
   const theme = useTheme();
   const navigate = useNavigate();
@@ -273,11 +273,13 @@ const Appointment = () => {
                       }}
                       value={datevalue}
                       name="dateofBirth"
-                      onChange={(newDate) =>
+                      onChange={(newDate) =>{
+                        const dateValue = newDate ? newDate.toDate() : undefined;
                         setAppointDetails({
                           ...appointDetails,
-                          date:newDate,
+                          date:dateValue!,
                         })
+                      }
                       }
                       slotProps={{
                         openPickerButton: { color: "secondary" },

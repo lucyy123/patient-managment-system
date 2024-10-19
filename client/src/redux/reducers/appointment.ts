@@ -1,4 +1,3 @@
-import { Appointment } from './../../../../server/src/models/appointment';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppointmentType, AppointReducerInitStateType, DocAppointment, DocAppointmentInitStateType } from "../../vite-env";
 

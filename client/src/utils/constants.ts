@@ -1,8 +1,8 @@
 import { EventAvailableOutlined, HourglassEmptyOutlined, WarningAmberOutlined } from "@mui/icons-material";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import axios from "axios";
 import toast from "react-hot-toast";
 import { AdminsType, CardsContentsType, UserRegistrationResMsg } from "../vite-env";
-import axios from "axios";
 export const privacyContents =
 
     [
@@ -81,6 +81,8 @@ export function convertTimeFormate(timeString: string) {
 
 export const getAllDoctorsList = async (): Promise<AdminsType | []> => {
     try {
+
+
         const baseUrl = `${import.meta.env.VITE_SERVER_BASE_URL}/api/v1/admin/get/all`;
         const res = await axios.get(baseUrl)
         const data: AdminsType = await res.data.admins

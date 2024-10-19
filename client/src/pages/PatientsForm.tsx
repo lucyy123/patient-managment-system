@@ -1,5 +1,4 @@
 import { CallOutlined, MailOutline, PersonOutline } from "@mui/icons-material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   Box,
   Button,
@@ -21,9 +20,12 @@ import {
   useTheme,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import dayjs from "dayjs";
 import { ChangeEvent, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import FileUploader from "../Components/FileUploader";
@@ -31,6 +33,9 @@ import Loader from "../Components/Loader";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
+import useGetUser from "../hooks/useGetUser";
+import { useUpdateUserMutation } from "../redux/apis/userApi";
+import { userExist } from "../redux/reducers/user";
 import {
   formatedDate,
   getAllDoctorsList,
@@ -42,11 +47,6 @@ import {
   UserReducerInitialState,
   UserRegistrationResMsg,
 } from "../vite-env";
-import { useUpdateUserMutation } from "../redux/apis/userApi";
-import toast from "react-hot-toast";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { userExist } from "../redux/reducers/user";
-import useGetUser from "../hooks/useGetUser";
 
 const PatientsForm = () => {
   useGetUser()
@@ -59,11 +59,11 @@ const PatientsForm = () => {
 
   const [checkedList, setCheckedList] = useState<boolean[]>([true, true, true]);
 
-  const [userDetails, setUserDetails] = useState({
+  const userDetails = {
     name: user?.name || "",
     email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
-  });
+  };
 
   const [personalInfo, setPersonalInfo] = useState({
     address: "",
@@ -75,7 +75,7 @@ const PatientsForm = () => {
   });
 
   const [medicalInfo, setMedicalInfo] = useState({
-    allergies: "" || [""],
+    allergies: [''] ,
     currentMedications: "",
     familyMedicalHistory: "",
     insurancePolicyNumber: "",
@@ -93,7 +93,7 @@ const PatientsForm = () => {
 
   const dispatch = useDispatch();
 
-  const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs(formatedDate));
+  const dateValue = dayjs(formatedDate);
 
   const [doclist, setDoclist] = useState<AdminsType | []>();
   useEffect(() => {
@@ -104,6 +104,7 @@ const PatientsForm = () => {
   //*1. FOR SUBMITTING--------\
   const hanldeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log('medical info',medicalInfo)
     try {
       const formdata = new FormData();
       formdata.append("email", String(user?.email));
@@ -132,7 +133,7 @@ const PatientsForm = () => {
     }
   };
 
-  //* .2-------------------------- USER INFORMATION
+  //* .2--------------------------- USER INFORMATION
 
   const hanldePersonalInfo = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -387,7 +388,11 @@ const PatientsForm = () => {
                       popper: {
                         sx: {
                           "& .MuiPaper-root": {
-                            backgroundColor: theme.palette.primary.main,
+                            backgroundColor: theme.palette.primary.main, // Ensures your background color
+                            color: theme.palette.primary.contrastText,   // If you want to ensure text color matches
+                          },
+                          "& .MuiPickersDay-root": {
+                            backgroundColor: theme.palette.primary.main, // Ensures days inside the calendar also match
                           },
                         },
                       },
