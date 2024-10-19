@@ -17,6 +17,7 @@ mongoDataBase(process.env.MONGO_URL);
 const app = express();
 const port = process.env.SERVER || 8001;
 const corsOptions = {
+    // origin: 'http://localhost:5173',
     origin: 'https://patient-managment-system-seven.vercel.app',
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
@@ -29,7 +30,8 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(morgan('dev'));
 //--------preflights-------
-app.options('*', cors(corsOptions));
+app.options('https://patient-managment-system-seven.vercel.app', cors(corsOptions));
+// app.options('http://localhost:5173', cors(corsOptions))
 //*------------------------------------- Caching -----------------------------
 export const myCache = new NodeCache();
 //*------------------------ routes----------------------------
