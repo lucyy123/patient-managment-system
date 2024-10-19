@@ -21,7 +21,7 @@ mongoDataBase(process.env.MONGO_URL as string);
 const app = express()
 const port = process.env.SERVER || 8001
 const corsOptions = {
-    origin: 'https://patient-managment-system-seven.vercel.app/',
+    origin: 'https://patient-managment-system-seven.vercel.app',
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
