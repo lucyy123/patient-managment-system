@@ -9,6 +9,7 @@ import {
 } from "../../vite-env";
 
 const baseUrl = `${import.meta.env.VITE_SERVER_BASE_URL}/api/v1/user`;
+console.log('baseUrl:', baseUrl)
 
 export const userAPI = createApi({
   reducerPath: "userApi",
