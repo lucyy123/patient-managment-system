@@ -21,7 +21,7 @@ mongoDataBase(process.env.MONGO_URL as string);
 const app = express()
 const port = process.env.SERVER || 8001
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: 'https://patient-managment-system-seven.vercel.app/',
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
@@ -35,7 +35,7 @@ app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(morgan('dev'))
 //--------preflights-------
-app.options('http://localhost:5173', cors(corsOptions))
+app.options('https://patient-managment-system-seven.vercel.app/', cors(corsOptions))
 
 //*------------------------------------- Caching -----------------------------
 
