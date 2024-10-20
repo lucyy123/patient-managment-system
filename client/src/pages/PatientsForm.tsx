@@ -49,7 +49,7 @@ import {
 } from "../vite-env";
 
 const PatientsForm = () => {
-  useGetUser()
+  // useGetUser()
   const navigate = useNavigate();
 
   const { loading, user } = useSelector(
