@@ -105,7 +105,7 @@ export const verifOTP = TryCatch(
         sameSite: "lax",
         maxAge: 3 * 60 * 60 * 1000, // 3 hour expiration
         path: "/",
-        domain:'https://patient-managment-system-lucyy123s-projects.vercel.app'
+       
       })
       .status(200)
       .json({
@@ -242,7 +242,7 @@ export const loginUser = TryCatch(
           sameSite: "lax",
       maxAge: 3 * 60 * 60 * 1000, // 3-hour expiration
       path: "/",
-      domain:'https://patient-managment-system-lucyy123s-projects.vercel.app'
+     
 
     });
 
@@ -262,7 +262,7 @@ export const logoutUser = TryCatch(async (req, res, next) => {
         sameSite: "lax",
     httpOnly: true,
   secure:true,
-  domain:'https://patient-managment-system-lucyy123s-projects.vercel.app'
+ 
 
   });
 

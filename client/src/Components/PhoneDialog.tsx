@@ -8,7 +8,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Dispatch, useState } from "react";
@@ -18,9 +18,7 @@ import { useNavigate } from "react-router-dom";
 import DialogHeader from "../pages/admin/DialogHeader";
 import { useLoginUserMutation } from "../redux/apis/userApi";
 import { userExist } from "../redux/reducers/user";
-import {
-  LoginUserResType
-} from "../vite-env";
+import { LoginUserResType } from "../vite-env";
 import DialogComponent from "./Dialog";
 
 type Props = {
@@ -63,9 +61,9 @@ const PhoneDialoge = ({ handelOpen, open = true }: Props) => {
       const err = error as FetchBaseQueryError;
       const data = err.data as LoginUserResType;
       toast.error(data.message);
-  if(data.message.includes('we')) return  setDailogueOpen(true);
+      if (data.message.includes("we")) return setDailogueOpen(true);
       // redirect user to otp section
-     
+
       setLoading(false);
       // catchError(error,UserRegistrationResMsg)
     }
