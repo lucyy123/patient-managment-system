@@ -9,6 +9,7 @@ const useGetUser = () => {
         const getUser = async () => {
             try {
                 const baseUrl = `${import.meta.env.VITE_SERVER_BASE_URL}/api/v1/user/get`
+                console.log('baseUrl:', baseUrl)
                 const res = await axios.get(baseUrl, {
                     withCredentials: true
                 });

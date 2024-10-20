@@ -27,7 +27,7 @@ export const adminAuthenticaton = TryCatch(async (req, res, next) => {
     res.cookie('authAdminToken', token, {
         httpOnly: true,
          secure:true,
-        sameSite: 'strict',
+          sameSite: "lax",
         maxAge: 3 * 60 * 60 * 1000, // 3-hour expiration
         path: '/',
     });
@@ -44,7 +44,7 @@ export const adminAuthenticaton = TryCatch(async (req, res, next) => {
 
 export const logoutAdmin = TryCatch(async (req, res, next) => {
     res.clearCookie('authAdminToken', {
-        sameSite: 'strict',
+          sameSite: "lax",
         httpOnly: true,
        secure:true,
     });
