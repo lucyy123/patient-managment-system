@@ -1,11 +1,13 @@
-import { lazy, Suspense } from "react";
+import Cookies from "js-cookie";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Loader from "./Components/Loader";
 import NotFound from "./Components/NotFound";
+import { setToken } from "./redux/reducers/token";
 import ProtectedRoute from "./utils/protectedRoutes";
-import { UserReducerInitialState } from "./vite-env";
+import { TokenInitialReducer, UserReducerInitialState } from "./vite-env";
 
 //*-------- normal imports--------------------
 
@@ -20,56 +22,74 @@ const Success = lazy(() => import("./pages/Success"));
 const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 
 const App = () => {
-  // todo: Implemention of token validation for redirection of user between home and appointment pages
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   // Check if the token is present in the cookies
-  //   const token = Cookies.get('authToken');
-
-  //   if (token) {
-  //     // You can optionally validate the token by making an API call
-  //     // Example: axios.get('/validate-token', { headers: { Authorization: `Bearer ${token}` } });
-
-  //     // If token is valid, navigate to the appointment page
-  //     navigate('/appointment');
-  //   } else {
-  //     // If no token, ensure user stays on the home page (or login page)
-  //     navigate('/home');
-  //   }
-  // }, [navigate]);
-
-
-
-  
+  const dispatch = useDispatch();
   const { user } = useSelector(
     (state: { userReducer: UserReducerInitialState }) => state.userReducer
   );
-  console.log('user?.role:', user?.role)
-  console.log(' user?.isVerified:',  user?.isVerified)
-  console.log('  user?.isCompleted:',   user?.isCompleted)
+  const { token } = useSelector(
+    (state: { tokenReducer: TokenInitialReducer }) => state.tokenReducer
+  );
+
+  useEffect(() => {
+    const tokenName = user?.role === "user" ? "authToken" : "authAdminToken";
+
+    //*------------- get token from cookies-------------
+    const tokenFromCookies = Cookies.get(tokenName);
+    console.log('tokenFromCookies:', tokenFromCookies)
+
+    if (tokenFromCookies) {
+      console.log("token stored in reducer")
+      dispatch(setToken(tokenFromCookies));
+    }
+
+    if (!token) {
+      console.log("token is not stored in reducer");
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (token) {
+      Cookies.set("authToken", token, {
+        sameSite: "none",
+        httpOnly: true,
+        secure: true,
+      });
+    }
+  }, [token]);
+
+  console.log("user?.role:", user?.role);
+  console.log(" user?.isVerified:", user?.isVerified);
+  console.log("  user?.isCompleted:", user?.isCompleted);
   return (
     <Router>
       <Suspense fallback={<Loader />}>
         <Routes>
           {/* ---------------------------- user routes--------------------------- */}
-          <Route path= "/" element={<OnBoarding />} />
+          <Route path="/" element={<OnBoarding />} />
           {/* ---------------------------- authenticated routes------------------- */}
           <Route
             element={
               <ProtectedRoute
-                isAuthenticated={user?.isVerified && user?.role==='user' ? true : false}
+                isAuthenticated={
+                  user?.isVerified && user?.role === "user" ? true : false
+                }
               />
             }
           >
             <Route path="/patient" element={<PatientsForm />} />
-          
           </Route>
 
-          <Route element ={< ProtectedRoute isAuthenticated = {user?.isVerified && user?.isCompleted ? true :false } />  }>
-          <Route path="/appointment" element={<Appointment />} />
-          <Route path="/success" element={<Success />} />
-
+          <Route
+            element={
+              <ProtectedRoute
+                isAuthenticated={
+                  user?.isVerified && user?.isCompleted ? true : false
+                }
+              />
+            }
+          >
+            <Route path="/appointment" element={<Appointment />} />
+            <Route path="/success" element={<Success />} />
           </Route>
 
           {/* --------------------- Admin routes------------------------------ */}
@@ -83,8 +103,8 @@ const App = () => {
             }
           >
           </Route> */}
-            <Route path="/admin/dashboard/:docId" element={<Dashboard />} /> 
-            <Route path="*" element={<NotFound />} />
+          <Route path="/admin/dashboard/:docId" element={<Dashboard />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       <Toaster position="bottom-center" />

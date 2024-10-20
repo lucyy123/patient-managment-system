@@ -33,7 +33,7 @@ import Loader from "../Components/Loader";
 import Heading from "../Components/shared/Heading";
 import LeftImage from "../Components/shared/LeftImage";
 import SubHeading from "../Components/shared/SubHeading";
-// import useGetUser from "../hooks/useGetUser";
+import useGetUser from "../hooks/useGetUser";
 import { useUpdateUserMutation } from "../redux/apis/userApi";
 import { userExist } from "../redux/reducers/user";
 import {
@@ -49,7 +49,7 @@ import {
 } from "../vite-env";
 
 const PatientsForm = () => {
-  // useGetUser()
+  useGetUser()
   const navigate = useNavigate();
 
   const { loading, user } = useSelector(

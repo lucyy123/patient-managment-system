@@ -19,6 +19,7 @@ import {
   appointmentListReducer,
   appointmentReducer,
 } from "./reducers/appointment";
+import { tokenReducer } from "./reducers/token";
 import { userReducer } from "./reducers/user";
 const persistConfig = {
   key: "carePlus",
@@ -46,6 +47,10 @@ const rootReducers = combineReducers({
   [appointmentListReducer.reducerPath]: persistReducer(
     persistConfig,
     appointmentListReducer.reducer
+  ),
+  [tokenReducer.reducerPath]: persistReducer(
+    persistConfig,
+    tokenReducer.reducer
   ),
 });
 

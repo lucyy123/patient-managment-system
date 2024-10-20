@@ -217,3 +217,7 @@ type DocAppointmentInitStateType = {
   loading: boolean
 }
 
+
+type TokenInitialReducer = {
+  token: string | null
+}
