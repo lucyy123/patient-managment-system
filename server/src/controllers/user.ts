@@ -102,7 +102,7 @@ export const verifOTP = TryCatch(
       .cookie("authToken", token, {
         httpOnly: true,
       secure:true,
-        sameSite: "lax",
+        sameSite: "none",
         maxAge: 3 * 60 * 60 * 1000, // 3 hour expiration
         path: "/",
        
@@ -239,7 +239,7 @@ export const loginUser = TryCatch(
     res.cookie("authToken", token, {
       httpOnly: true,
     secure:true,
-          sameSite: "lax",
+          sameSite: "none",
       maxAge: 3 * 60 * 60 * 1000, // 3-hour expiration
       path: "/",
      
@@ -259,7 +259,7 @@ export const loginUser = TryCatch(
 
 export const logoutUser = TryCatch(async (req, res, next) => {
   res.clearCookie("authToken", {
-        sameSite: "lax",
+        sameSite: "none",
     httpOnly: true,
   secure:true,
  
