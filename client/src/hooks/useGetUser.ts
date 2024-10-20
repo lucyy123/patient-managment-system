@@ -13,6 +13,7 @@ const useGetUser = () => {
                 const res = await axios.get(baseUrl, {
                     withCredentials: true
                 });
+                console.log('res.data.use:', res.data.use)
                 dispatch(userExist(res.data.user))
             } catch (error) {
                 dispatch(userNotExist())
