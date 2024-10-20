@@ -32,6 +32,7 @@ const App = () => {
 
   useEffect(() => {
     const tokenName = user?.role === "user" ? "authToken" : "authAdminToken";
+    console.log('user?.role:', user?.role)
 
     //*------------- get token from cookies-------------
     const tokenFromCookies = Cookies.get(tokenName);
@@ -45,10 +46,11 @@ const App = () => {
     if (!token) {
       console.log("token is not stored in reducer");
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, token]);
 
   useEffect(() => {
     if (token) {
+      console.log('token:', token)
       Cookies.set("authToken", token, {
         sameSite: "none",
         httpOnly: true,
