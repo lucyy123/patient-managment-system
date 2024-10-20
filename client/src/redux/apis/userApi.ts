@@ -62,5 +62,5 @@ export const {
   useVerifyUserMutation,
   useUpdateUserMutation,
   useLoginUserMutation,
-  useLogoutUserQuery
+  useLazyLogoutUserQuery
 } = userAPI;

@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useLogoutUserQuery } from "../../redux/apis/userApi";
+import { useLazyLogoutUserQuery } from "../../redux/apis/userApi";
 import { userNotExist } from "../../redux/reducers/user";
 import LogoutComponent from "./Logout";
 
@@ -13,13 +13,13 @@ type Props ={
 
 const Heading = ({showLogout=false}:Props) => {
   const [open,setOpen] = useState<boolean>(false)
-  const {refetch:logoutUser}=useLogoutUserQuery('')
+  const [logoutUser]=useLazyLogoutUserQuery()
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const handleLogout = async ()=>{
 try {
   
-  const res = await logoutUser().unwrap()
+  const res = await logoutUser('').unwrap()
   if(res.success){
     toast.success(res.message)
     dispatch(userNotExist())
