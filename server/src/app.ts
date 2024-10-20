@@ -13,12 +13,12 @@ import appointmentRoutes from './routes/appointment.js';
 import userRoutes from './routes/user.js';
 
 
-
 config({
     path: './.env',
 })
 mongoDataBase(process.env.MONGO_URL as string);
 const app = express()
+app.use(cookieParser())
 const port = process.env.SERVER || 8001
 const corsOptions = {
     // origin: 'http://localhost:5173',
@@ -33,7 +33,7 @@ const corsOptions = {
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 app.use(cors(corsOptions))
-app.use(cookieParser())
+
 app.use(morgan('dev'))
 //--------preflights-------
 app.options('https://patient-managment-system-seven.vercel.app', cors(corsOptions))
